@@ -1,0 +1,9 @@
+{
+  "files.associations": {
+    "system.h": "c",
+    "io.h": "c",
+    "led.h": "c",
+    "pacer.h": "c"
+  },
+  "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\bash.exe"
+}
