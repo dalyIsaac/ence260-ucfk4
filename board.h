@@ -1,6 +1,6 @@
 #include "system.h"
 
-void initialise_board(void);
+void board_init(void);
 
 void display_column(uint8_t current_column);
 

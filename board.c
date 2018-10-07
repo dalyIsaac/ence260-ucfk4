@@ -38,7 +38,7 @@ static const pio_t cols[] =
  * @param value The value to write
  * @param column The column to write the value to write to
  */
-void assignColumn(uint8_t value, uint8_t column)
+void assign_column(uint8_t value, uint8_t column)
 {
     for (uint8_t i = 0; i < 7; i++)
     {
@@ -49,9 +49,9 @@ void assignColumn(uint8_t value, uint8_t column)
 /**
  * @brief Gets the integer value of the column from the board
  * @param column The current column to process
- * @return uint8_t The value from the specified column
+ * @return int The value from the specified column
  */
-uint8_t getColumn(uint8_t column)
+uint8_t get_column(uint8_t column)
 {
     uint8_t value = 0;
     uint8_t placeValue = 1;
@@ -67,7 +67,7 @@ uint8_t getColumn(uint8_t column)
 
 void display_column(uint8_t current_column)
 {
-    uint8_t row_pattern = getColumn(current_column);
+    uint8_t row_pattern = get_column(current_column);
     pio_output_high(cols[previous_column]);
 
     for (uint8_t current_row = 0; current_row < LEDMAT_ROWS_NUM; current_row++)
@@ -104,11 +104,11 @@ void board_init(void)
     pio_config_set(LEDMAT_ROW6_PIO, PIO_OUTPUT_HIGH);
     pio_config_set(LEDMAT_ROW7_PIO, PIO_OUTPUT_HIGH);
 
-    assignColumn(0x30, 0);
-    assignColumn(0x46, 1);
-    assignColumn(0x40, 2);
-    assignColumn(0x46, 3);
-    assignColumn(0x30, 4);
+    assign_column(0x30, 0);
+    assign_column(0x46, 1);
+    assign_column(0x40, 2);
+    assign_column(0x46, 3);
+    assign_column(0x30, 4);
 }
 
 void display(void)
