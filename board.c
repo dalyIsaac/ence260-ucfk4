@@ -11,6 +11,12 @@
 
 #include "pio.h"
 #include "pacer.h"
+#include "board.h"
+
+/**
+ * @brief The column which the puck resides in
+ */
+#define PUCK_COL 4
 
 static uint8_t previous_column = 5;
 
@@ -94,6 +100,11 @@ void display_column(uint8_t current_column)
     previous_column = current_column;
 }
 
+void board_set_cell(uint8_t col, uint8_t row, bool value)
+{
+    board[col][row] = value;
+}
+
 /**
  * @brief Initialises the display/board
  */
@@ -113,13 +124,36 @@ void board_init(void)
     pio_config_set(LEDMAT_ROW5_PIO, PIO_OUTPUT_HIGH);
     pio_config_set(LEDMAT_ROW6_PIO, PIO_OUTPUT_HIGH);
     pio_config_set(LEDMAT_ROW7_PIO, PIO_OUTPUT_HIGH);
+}
 
-    // Initial board display
-    assign_column(0x30, 0);
-    assign_column(0x46, 1);
-    assign_column(0x40, 2);
-    assign_column(0x46, 3);
-    assign_column(0x30, 4);
+/**
+ * @brief Updates the puck in the board
+ * @param puck The puck to update
+ */
+void puck_update(Puck puck)
+{
+    // wipe the old puck
+    for (uint8_t i = puck.old_bottom; i <= puck.old_top; i++)
+    {
+        board[PUCK_COL][i] = false;
+    }
+
+    // set the new puck
+    for (uint8_t i = puck.new_bottom; i <= puck.new_top; i++)
+    {
+        board[PUCK_COL][i] = true;
+    }
+}
+
+/**
+ * @brief Creates a puck, and adds it to the board
+ * @return Puck The new puck
+ */
+Puck puck_create(void)
+{
+    Puck puck = {.old_top = 0, .old_bottom = 0, .new_top = 4, .new_bottom = 2};
+    puck_update(puck);
+    return puck;
 }
 
 /**
@@ -127,6 +161,7 @@ void board_init(void)
  */
 void display_board(void)
 {
+    puck_create();
     for (uint8_t current_column = 0; current_column < LEDMAT_COLS_NUM; current_column++)
     {
         pacer_wait();
