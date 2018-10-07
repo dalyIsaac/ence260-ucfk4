@@ -1,7 +1,7 @@
 /**
  * @file board.c
  * @author Isaac Daly (idd17@uclive.ac.nz)
- * @brief Contains definitions for the board/display
+ * @brief Contains definitions for the board/display, and the puck (at this point)
  * @version 0.1
  * @date 2018-10-08
  * 
@@ -12,11 +12,6 @@
 #include "pio.h"
 #include "pacer.h"
 #include "board.h"
-
-/**
- * @brief The column which the puck resides in
- */
-#define PUCK_COL 4
 
 static uint8_t previous_column = 5;
 

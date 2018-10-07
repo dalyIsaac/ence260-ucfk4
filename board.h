@@ -1,5 +1,10 @@
 #include "system.h"
 
+/**
+ * @brief The column which the puck resides in
+ */
+#define PUCK_COL 4
+
 void board_init(void);
 
 void display_column(uint8_t current_column);
