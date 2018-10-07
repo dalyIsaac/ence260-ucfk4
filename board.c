@@ -66,8 +66,9 @@ int getColumn(int column)
     return value;
 }
 
-void display_column(uint8_t row_pattern, uint8_t current_column)
+void display_column(uint8_t current_column)
 {
+    uint8_t row_pattern = getColumn(current_column);
     pio_output_high(cols[previous_column]);
 
     for (uint8_t current_row = 0; current_row < LEDMAT_ROWS_NUM; current_row++)
@@ -103,24 +104,19 @@ void board_init(void)
     pio_config_set(LEDMAT_ROW5_PIO, PIO_OUTPUT_HIGH);
     pio_config_set(LEDMAT_ROW6_PIO, PIO_OUTPUT_HIGH);
     pio_config_set(LEDMAT_ROW7_PIO, PIO_OUTPUT_HIGH);
-}
 
-const uint8_t bitmap[] = {0x30, 0x46, 0x40, 0x46, 0x30};
+    assignColumn(0x30, 0);
+    assignColumn(0x46, 1);
+    assignColumn(0x40, 2);
+    assignColumn(0x46, 3);
+    assignColumn(0x30, 4);
+}
 
 void display(void)
 {
-    uint8_t current_column = 0;
-    for (uint8_t i = 0; i < 5; i++)
+    for (uint8_t current_column = 0; current_column < 5; current_column++)
     {
         pacer_wait();
-
-        display_column(bitmap[current_column], current_column);
-
-        current_column++;
-
-        if (current_column > (LEDMAT_COLS_NUM - 1))
-        {
-            current_column = 0;
-        }
+        display_column(current_column);
     }
 }
