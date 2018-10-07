@@ -38,9 +38,9 @@ static const pio_t cols[] =
  * @param value The value to write
  * @param column The column to write the value to write to
  */
-void assignColumn(int value, int column)
+void assignColumn(uint8_t value, uint8_t column)
 {
-    for (int i = 0; i < 7; i++)
+    for (uint8_t i = 0; i < 7; i++)
     {
         board[column][i] = (value >> i) & 1;
     }
@@ -49,17 +49,16 @@ void assignColumn(int value, int column)
 /**
  * @brief Gets the integer value of the column from the board
  * @param column The current column to process
- * @return int The value from the specified column
+ * @return uint8_t The value from the specified column
  */
-int getColumn(int column)
+uint8_t getColumn(uint8_t column)
 {
-    int value = 0;
-    int placeValue = 1;
+    uint8_t value = 0;
+    uint8_t placeValue = 1;
 
-    for (int i = 0; i < 7; i++)
+    for (uint8_t i = 0; i < 7; i++)
     {
-        int temp = placeValue * board[column][i];
-        value += temp;
+        value += placeValue * board[column][i];
         placeValue *= 2;
     }
 
