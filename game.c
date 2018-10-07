@@ -28,6 +28,6 @@ int main(void)
 
     while (1)
     {
-        display();
+        display_board();
     }
 }

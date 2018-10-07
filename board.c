@@ -12,9 +12,13 @@
 #include "pio.h"
 #include "pacer.h"
 
-static int previous_column = 5;
+static uint8_t previous_column = 5;
 
-bool board[5][7] = {false}; // 5 columns x  7 rows
+/**
+ * @brief Boolean array which represents the board/display.
+ * Consists of 5 column x 7 rows
+ */
+bool board[LEDMAT_COLS_NUM][LEDMAT_ROWS_NUM] = {false};
 
 /**
  * @brief The PIO pins driving the LED matrix rows
@@ -40,7 +44,7 @@ static const pio_t cols[] =
  */
 void assign_column(uint8_t value, uint8_t column)
 {
-    for (uint8_t i = 0; i < 7; i++)
+    for (uint8_t i = 0; i < LEDMAT_ROWS_NUM; i++)
     {
         board[column][i] = (value >> i) & 1;
     }
@@ -48,7 +52,7 @@ void assign_column(uint8_t value, uint8_t column)
 
 /**
  * @brief Gets the integer value of the column from the board
- * @param column The current column to process
+ * @param column The current column to acquire
  * @return int The value from the specified column
  */
 uint8_t get_column(uint8_t column)
@@ -56,7 +60,7 @@ uint8_t get_column(uint8_t column)
     uint8_t value = 0;
     uint8_t placeValue = 1;
 
-    for (uint8_t i = 0; i < 7; i++)
+    for (uint8_t i = 0; i < LEDMAT_ROWS_NUM; i++)
     {
         value += placeValue * board[column][i];
         placeValue *= 2;
@@ -65,14 +69,19 @@ uint8_t get_column(uint8_t column)
     return value;
 }
 
+/**
+ * @brief Displays the current column based on the board's definition for that
+ * column
+ * @param current_column The current column to display
+ */
 void display_column(uint8_t current_column)
 {
-    uint8_t row_pattern = get_column(current_column);
+    uint8_t column_pattern = get_column(current_column);
     pio_output_high(cols[previous_column]);
 
     for (uint8_t current_row = 0; current_row < LEDMAT_ROWS_NUM; current_row++)
     {
-        if ((row_pattern >> current_row) & 1)
+        if ((column_pattern >> current_row) & 1)
         {
             pio_output_low(rows[current_row]);
         }
@@ -90,6 +99,7 @@ void display_column(uint8_t current_column)
  */
 void board_init(void)
 {
+    // Sets the display to empty
     pio_config_set(LEDMAT_COL1_PIO, PIO_OUTPUT_HIGH);
     pio_config_set(LEDMAT_COL2_PIO, PIO_OUTPUT_HIGH);
     pio_config_set(LEDMAT_COL3_PIO, PIO_OUTPUT_HIGH);
@@ -104,6 +114,7 @@ void board_init(void)
     pio_config_set(LEDMAT_ROW6_PIO, PIO_OUTPUT_HIGH);
     pio_config_set(LEDMAT_ROW7_PIO, PIO_OUTPUT_HIGH);
 
+    // Initial board display
     assign_column(0x30, 0);
     assign_column(0x46, 1);
     assign_column(0x40, 2);
@@ -111,9 +122,12 @@ void board_init(void)
     assign_column(0x30, 4);
 }
 
-void display(void)
+/**
+ * @brief Displays the board
+ */
+void display_board(void)
 {
-    for (uint8_t current_column = 0; current_column < 5; current_column++)
+    for (uint8_t current_column = 0; current_column < LEDMAT_COLS_NUM; current_column++)
     {
         pacer_wait();
         display_column(current_column);
