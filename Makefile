@@ -19,7 +19,7 @@ all: game.out
 game.o: game.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-board.o: board.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
+board.o: board.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../utils/pacer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
