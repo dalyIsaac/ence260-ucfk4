@@ -21,7 +21,7 @@
  * It is assumed that the orientation of the device is such that the IR I/O is faced away
  * from the player.
  */
-typedef enum nav_movement
+typedef enum nav_movement_e
 {
     left = -1,
     right = 1
