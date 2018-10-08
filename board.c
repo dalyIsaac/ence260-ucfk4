@@ -12,6 +12,7 @@
 #include "pio.h"
 #include "pacer.h"
 #include "board.h"
+#include "navswitch.h"
 
 static uint8_t previous_column = 5;
 
@@ -19,7 +20,12 @@ static uint8_t previous_column = 5;
  * @brief Boolean array which represents the board/display.
  * Consists of 5 column x 7 rows
  */
-bool board[LEDMAT_COLS_NUM][LEDMAT_ROWS_NUM] = {false};
+static bool board[LEDMAT_COLS_NUM][LEDMAT_ROWS_NUM] = {false};
+
+/**
+ * @brief Puck for this user in the game
+ */
+Puck puck = {0};
 
 /**
  * @brief The PIO pins driving the LED matrix rows
@@ -101,6 +107,34 @@ void board_set_cell(uint8_t col, uint8_t row, bool value)
 }
 
 /**
+ * @brief Updates the puck in the board
+ */
+void puck_update_display(void)
+{
+    // wipe the old puck
+    for (uint8_t i = puck.old_bottom; i <= puck.old_top; i++)
+    {
+        board[PUCK_COL][i] = false;
+    }
+
+    // set the new puck
+    for (uint8_t i = puck.new_bottom; i <= puck.new_top; i++)
+    {
+        board[PUCK_COL][i] = true;
+    }
+}
+
+/**
+ * @brief Creates a puck, and adds it to the board
+ */
+void puck_create(void)
+{
+    Puck new_puck = {.old_top = 0, .old_bottom = 0, .new_top = 4, .new_bottom = 2};
+    puck = new_puck;
+    puck_update_display();
+}
+
+/**
  * @brief Initialises the display/board
  */
 void board_init(void)
@@ -119,36 +153,22 @@ void board_init(void)
     pio_config_set(LEDMAT_ROW5_PIO, PIO_OUTPUT_HIGH);
     pio_config_set(LEDMAT_ROW6_PIO, PIO_OUTPUT_HIGH);
     pio_config_set(LEDMAT_ROW7_PIO, PIO_OUTPUT_HIGH);
+
+    puck_create();
 }
 
-/**
- * @brief Updates the puck in the board
- * @param puck The puck to update
- */
-void puck_update(Puck puck)
+void puck_update(NavMovement change)
 {
-    // wipe the old puck
-    for (uint8_t i = puck.old_bottom; i <= puck.old_top; i++)
+    if (puck.new_bottom + change >= 0 && puck.new_top + change < LEDMAT_ROWS_NUM)
     {
-        board[PUCK_COL][i] = false;
+        Puck new_puck = {
+            .old_bottom = puck.new_bottom,
+            .old_top = puck.new_top,
+            .new_bottom = puck.new_bottom + change,
+            .new_top = puck.new_top + change};
+        puck = new_puck;
+        puck_update_display();
     }
-
-    // set the new puck
-    for (uint8_t i = puck.new_bottom; i <= puck.new_top; i++)
-    {
-        board[PUCK_COL][i] = true;
-    }
-}
-
-/**
- * @brief Creates a puck, and adds it to the board
- * @return Puck The new puck
- */
-Puck puck_create(void)
-{
-    Puck puck = {.old_top = 0, .old_bottom = 0, .new_top = 4, .new_bottom = 2};
-    puck_update(puck);
-    return puck;
 }
 
 /**
@@ -156,10 +176,24 @@ Puck puck_create(void)
  */
 void display_board(void)
 {
-    puck_create();
     for (uint8_t current_column = 0; current_column < LEDMAT_COLS_NUM; current_column++)
     {
         pacer_wait();
         display_column(current_column);
+    }
+}
+
+void puck_task(void)
+{
+    navswitch_update();
+
+    if (navswitch_push_event_p(NAVSWITCH_NORTH))
+    {
+        puck_update(down);
+    }
+
+    if (navswitch_push_event_p(NAVSWITCH_SOUTH))
+    {
+        puck_update(up);
     }
 }

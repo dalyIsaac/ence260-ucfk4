@@ -13,6 +13,7 @@
 #include "pio.h"
 #include "pacer.h"
 #include "board.h"
+#include "navswitch.h"
 
 /**
  * @brief Main function for the game
@@ -22,12 +23,12 @@ int main(void)
 {
     system_init();
     pacer_init(500);
-
-    /* Initialise LED matrix pins.  */
+    navswitch_init();
     board_init();
 
     while (1)
     {
+        puck_task();
         display_board();
     }
 }
