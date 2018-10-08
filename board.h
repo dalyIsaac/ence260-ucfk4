@@ -1,30 +1,20 @@
+/**
+ * @file board.h
+ * @author Isaac Daly (idd17@uclive.ac.nz)
+ * @brief Contains the board/display's function declarations and macro definitions which are to 
+ * be shared with other files. 
+ * @version 0.1
+ * @date 2018-10-08
+ * 
+ * @copyright Copyright (c) 2018
+ * 
+ */
 #include "system.h"
 
-/**
- * @brief The column which the puck resides in
- */
-#define PUCK_COL 4
-
-typedef struct puck_s
-{
-    int8_t old_bottom;
-    int8_t old_top;
-    int8_t new_bottom;
-    int8_t new_top;
-} Puck;
-
-typedef enum nav_movement
-{
-    up = 1,
-    down = -1
-} NavMovement;
+bool board[LEDMAT_COLS_NUM][LEDMAT_ROWS_NUM];
 
 void board_init(void);
 
-void display_column(uint8_t current_column);
+void column_display(uint8_t current_column);
 
-void display_board(void);
-
-void puck_update(NavMovement change);
-
-void puck_task(void);
+void board_display(void);

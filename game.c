@@ -12,8 +12,9 @@
 #include "system.h"
 #include "pio.h"
 #include "pacer.h"
-#include "board.h"
 #include "navswitch.h"
+#include "board.h"
+#include "puck.h"
 
 /**
  * @brief Main function for the game
@@ -25,10 +26,11 @@ int main(void)
     pacer_init(500);
     navswitch_init();
     board_init();
+    puck_init();
 
     while (1)
     {
         puck_task();
-        display_board();
+        board_display();
     }
 }

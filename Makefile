@@ -1,6 +1,6 @@
 # File:   Makefile
-# Author: M. P. Hayes, UCECE
-# Date:   12 Sep 2010
+# Author: Isaac Daly (idd17@uclive.ac.nz)
+# Date:   2018-10-08
 # Descr:  Makefile for game
 
 # Definitions.
@@ -19,7 +19,10 @@ all: game.out
 game.o: game.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../utils/pacer.h ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-board.o: board.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../utils/pacer.h ../../drivers/navswitch.h
+board.o: board.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../utils/pacer.h 
+	$(CC) -c $(CFLAGS) $< -o $@
+
+puck.o: puck.c  ../../drivers/avr/system.h ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
@@ -39,7 +42,7 @@ navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/a
 
 
 # Link: create ELF output file from object files.
-game.out: game.o board.o pio.o system.o timer.o pacer.o navswitch.o
+game.out: game.o board.o puck.o pio.o system.o timer.o pacer.o navswitch.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
