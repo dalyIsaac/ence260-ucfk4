@@ -15,6 +15,7 @@
 #include "navswitch.h"
 #include "board.h"
 #include "puck.h"
+#include "ball.h"
 
 /**
  * @brief Main function for the game

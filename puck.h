@@ -47,31 +47,4 @@ void puck_update_value(NavMovement change);
 
 void puck_task(void);
 
-#define STARTING_COLUMN 0
-
-typedef enum direction_e
-{
-    north = 1,
-    north_east = 2,
-    east = 3,
-    south_east = 4,
-    south = -1,
-    south_west = -2,
-    west = -3,
-    north_west = -4
-} Direction;
-
-typedef struct ball_s
-{
-    int8_t old_row;
-    int8_t old_column;
-    int8_t new_row;
-    int8_t new_column;
-    uint8_t velocity;
-    Direction direction;
-
-} Ball;
-
-void ball_init(void);
-
 #endif

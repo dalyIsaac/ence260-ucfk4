@@ -11,8 +11,6 @@
 #include "puck.h"
 #include "navswitch.h"
 #include "board.h"
-#include <stdlib.h>
-#include <time.h>
 
 /**
  * @brief Puck for this user in the game
@@ -20,7 +18,7 @@
 static Puck puck = {0};
 
 /**
- * @brief Updates the puck in the board.
+ * @brief Updates the puck in the board/display.
  * CAN ONLY BE USED AFTER board_init()
  */
 void puck_update_display(void)
@@ -83,48 +81,4 @@ void puck_task(void)
     {
         puck_update_value(right);
     }
-}
-
-static Ball ball = {0};
-
-/**
- * @brief Returns a random value from the specified range.
- * This implementation is limited to values from 0 to 255, given that it uses uint8_t.
- * Based on https://stackoverflow.com/a/27712884/5018082
- * @param lower_limit Lower limit, inclusive. 0 <= lower_limit <= 255
- * @param upper_limit Upper limit, inclusive. 0 <= lower_limit <= 255
- * @return uint8_t Generated random value
- */
-uint8_t random_from_range(uint8_t lower_limit, uint8_t upper_limit)
-{
-    srand(time(NULL)); // ensures that the seed is different each time
-    float value = ((float)lower_limit + ((float)upper_limit) * rand()) / RAND_MAX;
-    return (uint8_t)value;
-}
-
-void ball_update_display(void)
-{
-    board[ball.old_column][ball.old_row] = false;
-    board[ball.new_column][ball.new_row] = true;
-}
-
-/**
- * @brief Creates a ball, and adds it to the board.
- * CAN ONLY BE USED AFTER board_init()
- */
-void ball_init(void)
-{
-    uint8_t starting_row = random_from_range(0, 6);
-    uint8_t starting_direction = random_from_range(north_east, south_east);
-
-    // arbitrary old numbers. They if the new (row, column) is (0, 0), they'll be overwritten automatically
-    Ball new_ball = {
-        .old_row = 0,
-        .old_column = 0,
-        .new_row = starting_row,
-        .new_column = STARTING_COLUMN,
-        .velocity = 1,
-        .direction = starting_direction};
-    ball = new_ball;
-    ball_update_display();
 }
