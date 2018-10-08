@@ -27,6 +27,7 @@ int main(void)
     navswitch_init();
     board_init();
     puck_init();
+    ball_init();
 
     while (1)
     {
