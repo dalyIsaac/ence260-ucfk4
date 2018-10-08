@@ -47,6 +47,10 @@ void puck_init(void)
     puck_update_display();
 }
 
+/**
+ * @brief Updates the value of a puck, following user input with the navswitch
+ * @param change The change to the puck's position
+ */
 void puck_update_value(NavMovement change)
 {
     if (puck.new_bottom + change >= 0 && puck.new_top + change < LEDMAT_ROWS_NUM)
