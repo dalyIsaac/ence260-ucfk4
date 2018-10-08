@@ -2,25 +2,29 @@
 #define BALL_H
 
 #include "system.h"
+#include "ledmat.h"
 
 /**
  * @brief Starting column for the ball
  */
 #define STARTING_COLUMN 0
+#define TOP_ROW 0
+#define BOTTOM_ROW LEDMAT_ROWS_NUM - 1
+#define INITIAL_VELOCITY 1
 
 /**
  * @brief Specifies the values for the various directions
  */
 typedef enum direction_e
 {
-    north = 1,
-    north_east = 2,
-    east = 3,
-    south_east = 4,
-    south = -1,
-    south_west = -2,
-    west = -3,
-    north_west = -4
+    north_west = 1,
+    north = 2,
+    north_east = 3,
+    east = 4,
+    south_east = -3,
+    south = -2,
+    south_west = -1,
+    west = -4,
 } Direction;
 
 /**
@@ -37,5 +41,9 @@ typedef struct ball_s
     Direction direction;
 
 } Ball;
+
+void ball_update_value(void);
+
+void ball_init(void);
 
 #endif

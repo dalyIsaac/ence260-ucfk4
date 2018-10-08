@@ -43,14 +43,39 @@ void ball_update_display(void)
     board[ball.new_column][ball.new_row] = true;
 }
 
+void ball_update_value(void)
+{
+    // uint8_t new_row = 0;
+    uint8_t new_column = 0;
+
+    // handle north*
+    // handle south*
+
+    if (ball.direction == east)
+    {
+        new_column = ball.new_column + ball.velocity;
+    }
+    else if (ball.direction == west)
+    {
+        new_column = ball.new_column - ball.velocity;
+    }
+
+    ball.old_column = ball.new_column;
+    ball.new_column = new_column;
+
+    ball_update_display();
+}
+
 /**
  * @brief Creates a ball, and adds it to the board.
  * CAN ONLY BE USED AFTER board_init()
  */
 void ball_init(void)
 {
-    uint8_t starting_row = random_from_range(0, 6);
-    uint8_t starting_direction = random_from_range(north_east, south_east);
+    // uint8_t starting_row = random_from_range(0, 6);
+    // uint8_t starting_direction = random_from_range(north_east, south_east);
+    uint8_t starting_row = 3;
+    uint8_t starting_direction = east;
 
     // arbitrary old numbers. They if the new (row, column) is (0, 0), they'll be overwritten automatically
     Ball new_ball = {
@@ -58,7 +83,7 @@ void ball_init(void)
         .old_column = 0,
         .new_row = starting_row,
         .new_column = STARTING_COLUMN,
-        .velocity = 1,
+        .velocity = INITIAL_VELOCITY,
         .direction = starting_direction};
     ball = new_ball;
     ball_update_display();

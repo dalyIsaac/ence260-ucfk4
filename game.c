@@ -32,6 +32,7 @@ int main(void)
 
     while (1)
     {
+        // ball_update_value();
         puck_task();
         board_display();
     }
