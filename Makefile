@@ -25,6 +25,9 @@ board.o: board.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../utils/
 puck.o: puck.c  ../../drivers/avr/system.h ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+ball.o: ball.c  ../../drivers/avr/system.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -42,7 +45,7 @@ navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/a
 
 
 # Link: create ELF output file from object files.
-game.out: game.o board.o puck.o pio.o system.o timer.o pacer.o navswitch.o
+game.out: game.o board.o puck.o ball.o pio.o system.o timer.o pacer.o navswitch.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

@@ -15,6 +15,7 @@
 #include "navswitch.h"
 #include "board.h"
 #include "puck.h"
+#include "ball.h"
 
 /**
  * @brief Main function for the game
@@ -27,6 +28,7 @@ int main(void)
     navswitch_init();
     board_init();
     puck_init();
+    ball_init();
 
     while (1)
     {

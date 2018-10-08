@@ -9,6 +9,8 @@
  * @copyright Copyright (c) 2018
  * 
  */
+#ifndef PUCK_H
+#define PUCK_H
 #include "system.h"
 
 /**
@@ -21,7 +23,7 @@
  * It is assumed that the orientation of the device is such that the IR I/O is faced away
  * from the player.
  */
-typedef enum nav_movement
+typedef enum nav_movement_e
 {
     left = -1,
     right = 1
@@ -44,3 +46,5 @@ void puck_init(void);
 void puck_update_value(NavMovement change);
 
 void puck_task(void);
+
+#endif
