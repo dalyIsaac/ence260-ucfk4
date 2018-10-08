@@ -10,7 +10,7 @@
  */
 #include <stdlib.h>
 #include <time.h>
-#include "board.h"
+#include "display.h"
 #include "ball.h"
 
 /**
@@ -39,8 +39,8 @@ uint8_t random_from_range(uint8_t lower_limit, uint8_t upper_limit)
  */
 void ball_update_display(void)
 {
-    board[ball.old_column][ball.old_row] = false;
-    board[ball.new_column][ball.new_row] = true;
+    display_pixel_set(ball.old_column, ball.old_row, false);
+    display_pixel_set(ball.new_column, ball.new_row, true);
 }
 
 void ball_update_value(void)
