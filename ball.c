@@ -100,7 +100,7 @@ void get_new_point(uint8_t *next_row, uint8_t *next_column)
  * @return true The ball is in the puck
  * @return false The ball is not in the puck
  */
-bool new_ball_is_in_puck(uint8_t column, uint8_t row)
+bool check_ball_puck_collide(int8_t column, int8_t row)
 {
     if (column >= PUCK_COL && puck.new_bottom <= row && row <= puck.new_top)
     {
@@ -121,7 +121,7 @@ void ball_update_value(void)
     get_new_point(&new_row, &new_column);
 
     // check if (new_row, new_column) is in the puck
-    if (new_ball_is_in_puck(new_column, new_row))
+    if (check_ball_puck_collide(new_column, new_row))
     {
         new_column = ball.new_column - ball.velocity;
         ImpactPoint impact = get_impact_point(new_row);
