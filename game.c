@@ -4,36 +4,36 @@
  * @brief Main module for the game
  * @version 0.1
  * @date 2018-10-08
- * 
+ *
  * @copyright Copyright (c) 2018
- * 
+ *
  */
 
-#include "system.h"
-#include "pio.h"
-#include "pacer.h"
-#include "navswitch.h"
-#include "board.h"
-#include "puck.h"
+#include "game.h"
 #include "ball.h"
+#include "board.h"
+#include "navswitch.h"
+#include "pio.h"
+#include "puck.h"
+#include "system.h"
+#include "task.h"
 
 /**
  * @brief Main function for the game
- * @return int 
+ * @return int
  */
 int main(void)
 {
+    task_t tasks[] = {
+        {.func = board_task, .period = TASK_RATE / BOARD_DISPLAY_TASK_RATE},
+        {.func = puck_task, .period = TASK_RATE / PUCK_TASK_RATE},
+        {.func = ball_task, .period = TASK_RATE / BALL_TASK_RATE}};
+
     system_init();
-    pacer_init(500);
     navswitch_init();
     board_init();
     puck_init();
     ball_init();
 
-    while (1)
-    {
-        // ball_update_value();
-        puck_task();
-        board_display();
-    }
+    task_schedule(tasks, ARRAY_SIZE(tasks));
 }

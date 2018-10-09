@@ -13,11 +13,7 @@
 #define BOARD_H
 #include "system.h"
 
-bool board[LEDMAT_COLS_NUM][LEDMAT_ROWS_NUM];
-
 void board_init(void);
 
-void column_display(uint8_t current_column);
-
-void board_display(void);
+void board_task(__unused__ void *data);
 #endif

@@ -46,4 +46,6 @@ void ball_update_value(void);
 
 void ball_init(void);
 
+void ball_task(__unused__ void *data);
+
 #endif

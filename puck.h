@@ -45,6 +45,6 @@ void puck_init(void);
 
 void puck_update_value(NavMovement change);
 
-void puck_task(void);
+void puck_task(__unused__ void *data);
 
 #endif

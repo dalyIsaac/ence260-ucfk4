@@ -10,7 +10,7 @@
  */
 #include "puck.h"
 #include "navswitch.h"
-#include "board.h"
+#include "display.h"
 
 /**
  * @brief Puck for this user in the game
@@ -24,15 +24,15 @@ static Puck puck = {0};
 void puck_update_display(void)
 {
     // wipes the old puck from the face of the display
-    for (uint8_t i = puck.old_bottom; i <= puck.old_top; i++)
+    for (uint8_t row = puck.old_bottom; row <= puck.old_top; row++)
     {
-        board[PUCK_COL][i] = false;
+        display_pixel_set(PUCK_COL, row, false);
     }
 
     // sets the new puck
-    for (uint8_t i = puck.new_bottom; i <= puck.new_top; i++)
+    for (uint8_t row = puck.new_bottom; row <= puck.new_top; row++)
     {
-        board[PUCK_COL][i] = true;
+        display_pixel_set(PUCK_COL, row, true);
     }
 }
 
@@ -68,7 +68,7 @@ void puck_update_value(NavMovement change)
 /**
  * @brief Updates the puck's position based on the user's interaction with the navswitch
  */
-void puck_task(void)
+void puck_task(__unused__ void *data)
 {
     navswitch_update();
 
