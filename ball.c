@@ -61,6 +61,7 @@ void ball_update_value(void)
     }
 
     ball.old_column = ball.new_column;
+    ball.old_row = ball.new_row;
     ball.new_column = new_column;
 
     ball_update_display();
@@ -87,4 +88,24 @@ void ball_init(void)
         .direction = starting_direction};
     ball = new_ball;
     ball_update_display();
+}
+
+/**
+ * @brief Updates the ball when it should
+ * @param void 
+ */
+void ball_task(__unused__ void *data)
+{
+    static uint16_t time;
+    uint8_t timer[2];
+
+    timer[0] = (time / 10) % 10;
+    timer[1] = time % 10;
+
+    if (timer[0] == 9 && timer[1] == 9)
+    {
+        ball_update_value();
+    }
+
+    time++;
 }

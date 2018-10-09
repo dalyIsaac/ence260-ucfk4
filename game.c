@@ -26,7 +26,8 @@ int main(void)
 {
     task_t tasks[] = {
         {.func = board_task, .period = TASK_RATE / BOARD_DISPLAY_TASK_RATE},
-        {.func = puck_task, .period = TASK_RATE / PUCK_TASK_RATE}};
+        {.func = puck_task, .period = TASK_RATE / PUCK_TASK_RATE},
+        {.func = ball_task, .period = TASK_RATE / BALL_TASK_RATE}};
 
     system_init();
     navswitch_init();
