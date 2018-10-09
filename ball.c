@@ -13,6 +13,8 @@
 #include "display.h"
 #include "ball.h"
 #include "puck.h"
+#include "tinygl.h"
+#include "string.h"
 
 /**
  * @brief Ball for the game
@@ -47,16 +49,15 @@ void ball_update_display(void)
 /**
  * @brief Gets the impact point between the puck and the ball.
  * Assumes that pucks are three points long.
- * @param row The puck's row
  * @return ImpactPoint The impact point
  */
-ImpactPoint get_impact_point(uint8_t row)
+ImpactPoint get_impact_point(void)
 {
-    if (row == puck.new_bottom)
+    if (ball.new_row == puck.new_bottom)
     {
         return bottom;
     }
-    else if (row == puck.new_top)
+    else if (ball.new_row == puck.new_top)
     {
         return top;
     }
@@ -64,49 +65,35 @@ ImpactPoint get_impact_point(uint8_t row)
 }
 
 /**
- * @brief Gets the projected next point for the ball
- * @param next_row The projected next row for the ball
- * @param column_next The projected next column for the ball 
- */
-void get_new_point(uint8_t *next_row, uint8_t *next_column)
-{
-    if (ball.direction == east)
-    {
-        *next_column = ball.new_column + ball.velocity;
-        *next_row = ball.new_row;
-    }
-    else if (ball.direction == west)
-    {
-        *next_column = ball.new_column - ball.velocity;
-        *next_row = ball.new_row;
-    }
-    else if (ball.direction == south_west)
-    {
-        *next_column = ball.new_column - ball.velocity;
-        *next_row = ball.new_row - ball.velocity;
-    }
-    else if (ball.direction == south_east)
-    {
-        *next_column = ball.new_column - ball.velocity;
-        *next_row = ball.new_row + ball.velocity;
-    }
-}
-
-/**
  * @brief Checks to see if the proposed location for the ball is currently occupied by
  * the puck
- * @param column The column to check
- * @param row The row to check
  * @return true The ball is in the puck
  * @return false The ball is not in the puck
  */
-bool check_ball_puck_collide(int8_t column, int8_t row)
+void handle_ball_puck_collide(void)
 {
-    if (column >= PUCK_COL && puck.new_bottom <= row && row <= puck.new_top)
+    if (ball.new_column >= PUCK_COL && puck.new_bottom <= ball.new_row && ball.new_row <= puck.new_top)
     {
-        return true;
+        // collision
+        ImpactPoint impact = get_impact_point();
+        ball.new_column = 2;
+
+        if (impact == middle)
+        {
+            ball.direction = west;
+        }
+        else if (impact == top)
+        {
+            ball.direction = north_west;
+            ball.new_row += 1;
+        }
+        else if (impact == bottom)
+        {
+            ball.direction = south_west;
+            ball.new_row -= 1;
+        }
     }
-    return false;
+    // no collision
 }
 
 /**
@@ -114,47 +101,29 @@ bool check_ball_puck_collide(int8_t column, int8_t row)
  */
 void ball_update_value(void)
 {
-    uint8_t new_row = UNINITIALISED;
-    uint8_t new_column = UNINITIALISED;
-    Direction new_direction = ball.direction;
+    ball.old_column = ball.new_column;
+    ball.old_row = ball.new_row;
 
-    get_new_point(&new_row, &new_column);
-
-    // check if (new_row, new_column) is in the puck
-    if (check_ball_puck_collide(new_column, new_row))
+    if (ball.direction >= north_east) // based on the direction compass. This includes NE, E, SE
     {
-        new_column = ball.new_column - ball.velocity;
-        ImpactPoint impact = get_impact_point(new_row);
-        if (impact == middle)
-        {
-            new_direction = west;
-        }
-        else if (impact == bottom)
-        {
-            if (ball.direction == east)
-            {
-                new_direction = south_west;
-                new_row = ball.new_row - ball.velocity;
-            }
-        }
-        else if (impact == top)
-        {
-            if (ball.direction == east)
-            {
-                new_direction = south_east;
-                new_row = ball.new_row + ball.velocity;
-            }
-        }
+        ball.new_column += 1;
+    }
+    else if (ball.direction <= north_west) // based on the direction compass. This includes NW, W, SW
+    {
+
+        ball.new_column -= 1;
     }
 
-    // check if (new_row, new_column) means that the player loses
-    // check if (new_row, new_column) needs to be transmitted to the other player
+    if (ball.direction == north_west || ball.direction == north_east)
+    {
+        ball.new_row += 1;
+    }
+    else if (ball.direction == south_west || ball.direction == south_east)
+    {
+        ball.new_row -= 1;
+    }
 
-    ball.old_row = ball.new_row;
-    ball.old_column = ball.new_column;
-    ball.new_row = new_row;
-    ball.new_column = new_column;
-    ball.direction = new_direction;
+    handle_ball_puck_collide();
 
     ball_update_display();
 }
@@ -165,21 +134,31 @@ void ball_update_value(void)
  */
 void ball_init(void)
 {
-    // uint8_t starting_row = random_from_range(0, 6);
-    // uint8_t starting_direction = random_from_range(north_east, south_east);
-    uint8_t starting_row = 3;
-    uint8_t starting_direction = east;
-
     // arbitrary old numbers. They if the new (row, column) is (0, 0), they'll be overwritten automatically
     Ball new_ball = {
         .old_row = 0,
         .old_column = 0,
-        .new_row = starting_row,
-        .new_column = STARTING_COLUMN,
-        .velocity = INITIAL_VELOCITY,
-        .direction = starting_direction};
+        .new_row = 3,
+        .new_column = 0,
+        .velocity = 2,
+        .direction = east};
     ball = new_ball;
+
     ball_update_display();
+}
+
+static uint16_t counter;
+
+// time should be between 0 and 99, inclusive
+bool check_timer(uint8_t time_to_check)
+{
+    uint8_t timer = ((counter / 10) % 10) * 10 + counter % 10;
+
+    if (timer == time_to_check)
+    {
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -188,16 +167,25 @@ void ball_init(void)
  */
 void ball_task(__unused__ void *data)
 {
-    static uint16_t time;
-    uint8_t timer[2];
-
-    timer[0] = (time / 10) % 10;
-    timer[1] = time % 10;
-
-    if (timer[0] == 9 && timer[1] == 9)
+    uint8_t value = 99;
+    uint8_t subtract_value = 100 / ball.velocity;
+    for (uint8_t i = 0; i < ball.velocity; i++)
     {
-        ball_update_value();
-    }
+        if (check_timer(value))
+        {
+            ball_update_value();
+            counter++;
+            return;
+        }
 
-    time++;
+        value -= subtract_value;
+    }
+    counter++;
+    return;
+
+    // char text[3];
+    // itoa(ball.direction, text, 10);
+    // tinygl_clear();
+    // tinygl_text(text);
+    // tinygl_update();
 }

@@ -18,14 +18,12 @@
  */
 typedef enum direction_e
 {
-    north_west = 1,
-    north = 2,
-    north_east = 3,
-    east = 4,
-    south_east = -3,
-    south = -2,
-    south_west = -1,
-    west = -4,
+    north_east = 1,
+    east = 2,
+    south_east = 3,
+    north_west = -1,
+    west = -2,
+    south_west = -3
 } Direction;
 
 /**
