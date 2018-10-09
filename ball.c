@@ -12,6 +12,7 @@
 #include <time.h>
 #include "display.h"
 #include "ball.h"
+#include "puck.h"
 
 /**
  * @brief Ball for the game
@@ -45,11 +46,13 @@ void ball_update_display(void)
 
 void ball_update_value(void)
 {
-    // uint8_t new_row = 0;
-    uint8_t new_column = 0;
+    uint8_t new_row = UNINITIALISED;
+    uint8_t new_column = UNINITIALISED;
+    Direction new_direction = ball.direction;
 
     // handle north*
     // handle south*
+    new_row = ball.new_row; // remove later
 
     if (ball.direction == east)
     {
@@ -60,9 +63,20 @@ void ball_update_value(void)
         new_column = ball.new_column - ball.velocity;
     }
 
-    ball.old_column = ball.new_column;
+    // check if (new_row, new_column) is in the puck
+    if (new_ball_is_in_puck(new_column, new_row))
+    {
+        new_direction *= -1;
+        new_column = ball.new_column - ball.velocity;
+    }
+    // check if (new_row, new_column) means that the player loses
+    // check if (new_row, new_column) needs to be transmitted to the other player
+
     ball.old_row = ball.new_row;
+    ball.old_column = ball.new_column;
+    ball.new_row = new_row;
     ball.new_column = new_column;
+    ball.direction = new_direction;
 
     ball_update_display();
 }

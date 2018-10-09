@@ -45,6 +45,8 @@ void puck_init(void);
 
 void puck_update_value(NavMovement change);
 
+bool new_ball_is_in_puck(uint8_t column, uint8_t row);
+
 void puck_task(__unused__ void *data);
 
 #endif

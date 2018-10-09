@@ -11,6 +11,7 @@
 #define TOP_ROW 0
 #define BOTTOM_ROW LEDMAT_ROWS_NUM - 1
 #define INITIAL_VELOCITY 1
+#define UNINITIALISED 8
 
 /**
  * @brief Specifies the values for the various directions
