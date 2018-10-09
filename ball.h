@@ -38,7 +38,7 @@ typedef struct ball_s
     int8_t old_column;
     int8_t new_row;
     int8_t new_column;
-    uint8_t velocity;
+    int8_t velocity;
     Direction direction;
 
 } Ball;

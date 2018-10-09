@@ -24,13 +24,13 @@ Puck puck = {0};
 void puck_update_display(void)
 {
     // wipes the old puck from the face of the display
-    for (uint8_t row = puck.old_bottom; row <= puck.old_top; row++)
+    for (int8_t row = puck.old_bottom; row <= puck.old_top; row++)
     {
         display_pixel_set(PUCK_COL, row, false);
     }
 
     // sets the new puck
-    for (uint8_t row = puck.new_bottom; row <= puck.new_top; row++)
+    for (int8_t row = puck.new_bottom; row <= puck.new_top; row++)
     {
         display_pixel_set(PUCK_COL, row, true);
     }
