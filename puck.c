@@ -15,7 +15,7 @@
 /**
  * @brief Puck for this user in the game
  */
-static Puck puck = {0};
+Puck puck = {0};
 
 /**
  * @brief Updates the puck in the board/display.

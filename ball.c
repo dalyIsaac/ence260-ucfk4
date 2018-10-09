@@ -44,31 +44,92 @@ void ball_update_display(void)
     display_pixel_set(ball.new_column, ball.new_row, true);
 }
 
+/**
+ * @brief Gets the impact point between the puck and the ball.
+ * Assumes that pucks are three points long.
+ * @param row The puck's row
+ * @return ImpactPoint The impact point
+ */
+ImpactPoint get_impact_point(uint8_t row)
+{
+    if (row == puck.new_bottom)
+    {
+        return bottom;
+    }
+    else if (row == puck.new_top)
+    {
+        return top;
+    }
+    return middle;
+}
+
+/**
+ * @brief Gets the projected next point for the ball
+ * @param next_row The projected next row for the ball
+ * @param column_next The projected next column for the ball 
+ */
+void get_new_point(uint8_t *next_row, uint8_t *next_column)
+{
+    if (ball.direction == east)
+    {
+        *next_column = ball.new_column + ball.velocity;
+        *next_row = ball.new_row;
+    }
+    else if (ball.direction == west)
+    {
+        *next_column = ball.new_column - ball.velocity;
+        *next_row = ball.new_row;
+    }
+    else if (ball.direction == south_west)
+    {
+        *next_column = ball.new_column - ball.velocity;
+        *next_row = ball.new_row - ball.velocity;
+    }
+    else if (ball.direction == south_east)
+    {
+        *next_column = ball.new_column - ball.velocity;
+        *next_row = ball.new_row + ball.velocity;
+    }
+}
+
+/**
+ * @brief Updates the ball's location, based on its attributes and location within the board
+ */
 void ball_update_value(void)
 {
     uint8_t new_row = UNINITIALISED;
     uint8_t new_column = UNINITIALISED;
     Direction new_direction = ball.direction;
 
-    // handle north*
-    // handle south*
-    new_row = ball.new_row; // remove later
-
-    if (ball.direction == east)
-    {
-        new_column = ball.new_column + ball.velocity;
-    }
-    else if (ball.direction == west)
-    {
-        new_column = ball.new_column - ball.velocity;
-    }
+    get_new_point(&new_row, &new_column);
 
     // check if (new_row, new_column) is in the puck
     if (new_ball_is_in_puck(new_column, new_row))
     {
-        new_direction *= -1;
         new_column = ball.new_column - ball.velocity;
+        ImpactPoint impact = get_impact_point(new_row);
+        if (impact == middle)
+        {
+            new_direction = west;
+        }
+        else if (impact == bottom)
+        {
+            if (ball.direction == east)
+            {
+                new_direction = south_west;
+                new_row = ball.new_row - ball.velocity;
+            }
+        }
+        else if (impact == top)
+        {
+            if (ball.direction == east)
+            {
+                new_direction = south_east;
+                new_row = ball.new_row + ball.velocity;
+            }
+        }
     }
+
     // check if (new_row, new_column) means that the player loses
     // check if (new_row, new_column) needs to be transmitted to the other player
 

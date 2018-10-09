@@ -43,6 +43,16 @@ typedef struct ball_s
 
 } Ball;
 
+/**
+ * @brief Definition for the ImpactPoint type. It indicates where on the puck the ball impacted.
+ */
+typedef enum impact_point_e
+{
+    bottom = 0,
+    middle = 1,
+    top = 2
+} ImpactPoint;
+
 void ball_update_value(void);
 
 void ball_init(void);
