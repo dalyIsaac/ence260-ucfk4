@@ -66,23 +66,6 @@ void puck_update_value(NavMovement change)
 }
 
 /**
- * @brief Checks to see if the proposed location for the ball is currently occupied by
- * the puck
- * @param column The column to check
- * @param row The row to check
- * @return true The ball is in the puck
- * @return false The ball is not in the puck
- */
-bool new_ball_is_in_puck(uint8_t column, uint8_t row)
-{
-    if (column >= PUCK_COL && puck.new_bottom <= row && row <= puck.new_top)
-    {
-        return true;
-    }
-    return false;
-}
-
-/**
  * @brief Updates the puck's position based on the user's interaction with the navswitch
  */
 void puck_task(__unused__ void *data)

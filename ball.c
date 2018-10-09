@@ -93,6 +93,23 @@ void get_new_point(uint8_t *next_row, uint8_t *next_column)
 }
 
 /**
+ * @brief Checks to see if the proposed location for the ball is currently occupied by
+ * the puck
+ * @param column The column to check
+ * @param row The row to check
+ * @return true The ball is in the puck
+ * @return false The ball is not in the puck
+ */
+bool new_ball_is_in_puck(uint8_t column, uint8_t row)
+{
+    if (column >= PUCK_COL && puck.new_bottom <= row && row <= puck.new_top)
+    {
+        return true;
+    }
+    return false;
+}
+
+/**
  * @brief Updates the ball's location, based on its attributes and location within the board
  */
 void ball_update_value(void)
