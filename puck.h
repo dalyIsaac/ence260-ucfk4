@@ -41,10 +41,12 @@ typedef struct puck_s
     int8_t new_top;
 } Puck;
 
+Puck puck;
+
 void puck_init(void);
 
 void puck_update_value(NavMovement change);
 
-void puck_task(void);
+void puck_task(__unused__ void *data);
 
 #endif
