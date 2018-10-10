@@ -15,9 +15,6 @@
 #include "board.h"
 #include "display.h"
 #include "puck.h"
-#include "string.h"
-
-#include <stdlib.h>
 
 /**
  * @brief Ball for the game
