@@ -66,16 +66,12 @@ ImpactPoint get_impact_point(void)
 }
 
 /**
- * @brief Checks to see if the proposed location for the ball is currently occupied by
- * the puck
- * @return true The ball is in the puck
- * @return false The ball is not in the puck
+ * @brief Handles collisions where the ball's direction is west
  */
-void handle_ball_puck_collision(void)
+void handle_ball_puck_collision_west(void)
 {
-    if (ball.new_column >= PUCK_COL && puck.new_bottom <= ball.new_row && ball.new_row <= puck.new_top)
+    if (ball.new_column == PUCK_COL && puck.new_bottom <= ball.new_row && ball.new_row <= puck.new_top)
     {
-        // collision
         ImpactPoint impact = get_impact_point();
         ball.new_column = 2;
 
@@ -94,7 +90,59 @@ void handle_ball_puck_collision(void)
             ball.new_row -= 1;
         }
     }
-    // no collision
+}
+
+/**
+ * @brief Hanles collisions where the ball's direction is south_west
+ * 
+ */
+void handle_ball_puck_collision_south_west(void)
+{
+    if (ball.new_column == PUCK_COL)
+    {
+        ball.new_column = 2;
+        if (ball.old_row == puck.new_top)
+        {
+            ball.direction = south_east;
+            ball.velocity += 1;
+        }
+        else if (ball.old_row == puck.new_top - 1) // middle
+        {
+            ball.direction = east;
+            ball.new_row = ball.old_row;
+        }
+        else if (ball.old_row == puck.new_bottom)
+        {
+            ball.direction = south_east;
+            ball.velocity += 2;
+        }
+    }
+}
+
+void handle_ball_puck_collision_south_east(void)
+{
+}
+
+/**
+ * @brief Checks to see if the proposed location for the ball is currently occupied by
+ * the puck
+ * @return true The ball is in the puck
+ * @return false The ball is not in the puck
+ */
+void handle_ball_puck_collision(void)
+{
+    if (ball.direction == west)
+    {
+        handle_ball_puck_collision_west();
+    }
+    else if (ball.direction == south_west)
+    {
+        handle_ball_puck_collision_south_west();
+    }
+    else if (ball.direction == south_east)
+    {
+        handle_ball_puck_collision_south_east();
+    }
 }
 
 /**
@@ -178,10 +226,10 @@ void ball_init(void)
     Ball new_ball = {
         .old_row = 0,
         .old_column = 0,
-        .new_row = 3,
-        .new_column = 0,
-        .velocity = 2,
-        .direction = west};
+        .new_row = 5,
+        .new_column = 2,
+        .velocity = 1,
+        .direction = south_west};
     ball = new_ball;
 
     ball_update_display();
