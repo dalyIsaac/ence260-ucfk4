@@ -43,4 +43,6 @@ int main(void)
     ball_init();
 
     task_schedule(tasks, ARRAY_SIZE(tasks));
+
+    return 0;
 }
