@@ -7,6 +7,7 @@
  * 
  * @copyright Copyright (c) 2018
  * 
+ * @note The bottom of the board is the side closest to the USB port
  */
 #include "puck.h"
 #include "navswitch.h"

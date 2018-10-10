@@ -7,6 +7,7 @@
  * 
  * @copyright Copyright (c) 2018
  * 
+ * @note The bottom of the board is the side closest to the USB port. The south side is the bottom side of the board. 
  */
 #include <stdlib.h>
 #include <time.h>
@@ -70,7 +71,7 @@ ImpactPoint get_impact_point(void)
  * @return true The ball is in the puck
  * @return false The ball is not in the puck
  */
-void handle_ball_puck_collide(void)
+void handle_ball_puck_collision(void)
 {
     if (ball.new_column >= PUCK_COL && puck.new_bottom <= ball.new_row && ball.new_row <= puck.new_top)
     {
@@ -80,20 +81,66 @@ void handle_ball_puck_collide(void)
 
         if (impact == middle)
         {
-            ball.direction = west;
+            ball.direction = east;
         }
         else if (impact == top)
         {
-            ball.direction = north_west;
+            ball.direction = north_east;
             ball.new_row += 1;
         }
         else if (impact == bottom)
         {
-            ball.direction = south_west;
+            ball.direction = south_east;
             ball.new_row -= 1;
         }
     }
     // no collision
+}
+
+/**
+ * @brief Updates the ball with the new column.
+ */
+void set_ball_column_movement(void)
+{
+    if (ball.direction >= north_east) // based on the direction compass. This includes NE, E, SE
+    {
+        ball.new_column -= 1;
+    }
+    else if (ball.direction <= north_west) // based on the direction compass. This includes NW, W, SW
+    {
+        ball.new_column += 1;
+    }
+}
+
+/**
+ * @brief If the ball collides with the wall, its row and direction are updated.
+ */
+void handle_ball_wall_collision(void)
+{
+    if (ball.new_row < 0) // impacts the bottom row
+    {
+        ball.new_row = 1;
+        if (ball.direction == south_west)
+        {
+            ball.direction = north_west;
+        }
+        else if (ball.direction == south_east)
+        {
+            ball.direction = north_east;
+        }
+    }
+    else if (ball.new_row > 6) // impacts the top row
+    {
+        ball.new_row = 5;
+        if (ball.direction == north_west)
+        {
+            ball.direction = south_west;
+        }
+        else if (ball.direction == north_east)
+        {
+            ball.direction = south_east;
+        }
+    }
 }
 
 /**
@@ -104,15 +151,7 @@ void ball_update_value(void)
     ball.old_column = ball.new_column;
     ball.old_row = ball.new_row;
 
-    if (ball.direction >= north_east) // based on the direction compass. This includes NE, E, SE
-    {
-        ball.new_column += 1;
-    }
-    else if (ball.direction <= north_west) // based on the direction compass. This includes NW, W, SW
-    {
-
-        ball.new_column -= 1;
-    }
+    set_ball_column_movement();
 
     if (ball.direction == north_west || ball.direction == north_east)
     {
@@ -123,7 +162,8 @@ void ball_update_value(void)
         ball.new_row -= 1;
     }
 
-    handle_ball_puck_collide();
+    handle_ball_puck_collision();
+    handle_ball_wall_collision();
 
     ball_update_display();
 }
@@ -141,12 +181,15 @@ void ball_init(void)
         .new_row = 3,
         .new_column = 0,
         .velocity = 2,
-        .direction = east};
+        .direction = west};
     ball = new_ball;
 
     ball_update_display();
 }
 
+/**
+ * @brief Counter which is used for the timer. 
+ */
 static uint16_t counter;
 
 // time should be between 0 and 99, inclusive
@@ -179,13 +222,12 @@ void ball_task(__unused__ void *data)
         }
 
         value -= subtract_value;
+        // char text[3];
+        // itoa(ball.direction, text, 10);
+        // tinygl_clear();
+        // tinygl_text(text);
+        // tinygl_update();
     }
     counter++;
     return;
-
-    // char text[3];
-    // itoa(ball.direction, text, 10);
-    // tinygl_clear();
-    // tinygl_text(text);
-    // tinygl_update();
 }
