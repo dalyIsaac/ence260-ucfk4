@@ -1,7 +1,8 @@
 # File:   Makefile
 # Author: Isaac Daly (idd17@uclive.ac.nz)
-# Date:   2018-10-08
+# Date:   2018-10-10
 # Descr:  Makefile for game
+# Version: 0.2
 
 # Definitions.
 CC = avr-gcc
@@ -16,7 +17,7 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-game.o: game.c ../../drivers/avr/pio.h ../../drivers/avr/system.h  ../../drivers/navswitch.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/tinygl.h
+game.o: game.c ../../drivers/avr/pio.h ../../drivers/avr/system.h  ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 board.o: board.c ../../drivers/avr/pio.h ../../drivers/avr/system.h 
@@ -49,14 +50,9 @@ navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/a
 task.o: ../../utils/task.c ../../utils/task.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.h ../../utils/font.h ../../utils/tinygl.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
-font.o: ../../utils/font.c ../../drivers/avr/system.h ../../utils/font.h
-	$(CC) -c $(CFLAGS) $< -o $@
 
 # Link: create ELF output file from object files.
-game.out: game.o board.o puck.o ball.o ledmat.o display.o pio.o system.o timer.o navswitch.o task.o tinygl.o font.o
+game.out: game.o board.o puck.o ball.o ledmat.o display.o pio.o system.o timer.o navswitch.o task.o 
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

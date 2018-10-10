@@ -1,34 +1,61 @@
 #ifndef BALL_H
 #define BALL_H
 
-#include "system.h"
 #include "ledmat.h"
+#include "system.h"
 
 /**
- * @brief Starting column for the ball
+ * @brief Starting row for the ball.
+ */
+#define STARTING_ROW 3
+
+/**
+ * @brief Starting column for the ball.
  */
 #define STARTING_COLUMN 0
-#define TOP_ROW 0
-#define BOTTOM_ROW LEDMAT_ROWS_NUM - 1
-#define INITIAL_VELOCITY 1
-#define UNINITIALISED 8
 
 /**
- * @brief Specifies the values for the various directions
+ * @brief Starting direction for the ball.
  */
-typedef enum direction_e
-{
-    north_east = 1,
-    east = 2,
-    south_east = 3,
-    north_west = -1,
-    west = -2,
-    south_west = -3
+#define STARTING_DIRECTION WEST
+
+/**
+ * @brief Starting velocity for the ball.
+ *  */
+#define STARTING_VELOCITY 1
+
+/**
+ * @brief The first value which is checked against to see if the ball can update.
+ */
+#define FIRST_VALUE_FOR_UPDATE 99
+
+/**
+ * @brief Used for determining the subtract_value, which in turn allows the ball to be updated
+ * depending on its velocity.
+ */
+#define VARIABLE_PERIOD_NUMERATOR 100
+
+/**
+ * @brief Gets the timer, based on the continually incrementing counter.
+ */
+#define GET_TIMER(counter) ((counter / 10) % 10) * 10 + counter % 10
+
+/**
+ * @brief Specifies the values for the various directions.
+ */
+typedef enum direction_e {
+    NORTH_EAST = 1,
+    EAST = 2,
+    SOUTH_EAST = 3,
+    NORTH_WEST = -1,
+    WEST = -2,
+    SOUTH_WEST = -3
 } Direction;
 
 /**
- * @brief Definition for the Ball type. The old values are kept in order to wipe them from
- * the display, so that the new position can be written without retaining the old position.
+ * @brief Definition for the Ball type. The old values are kept in order to wipe
+ * them from the display, so that the new position can be written without
+ * retaining the old position.
  */
 typedef struct ball_s
 {
@@ -42,19 +69,15 @@ typedef struct ball_s
 } Ball;
 
 /**
- * @brief Definition for the ImpactPoint type. It indicates where on the puck the ball impacted.
+ * @brief Definition for the ImpactPoint type. It indicates where on the puck
+ * the ball impacted.
  */
-typedef enum impact_point_e
-{
-    bottom = 0,
-    middle = 1,
-    top = 2
-} ImpactPoint;
+typedef enum impact_point_e { IMPACT_BOTTOM = 0, IMPACT_MIDDLE = 1, IMPACT_TOP = 2 } ImpactPoint;
 
 void ball_update_value(void);
 
 void ball_init(void);
 
-void ball_task(__unused__ void *data);
+void ball_task(__unused__ void* data);
 
 #endif

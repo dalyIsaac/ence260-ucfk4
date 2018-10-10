@@ -42,3 +42,10 @@ The puck/paddle has its `bottom` towards the top of the display (i.e. it has a _
 Compass directions, with the same orientiation as the board above:
 
 ![Image of the compass directions with the same orientation as above](media/compass.png)
+
+## Code
+
+The coding style is specified in [`.clang_format`](.clang_format). The general style mostly reflects the [ENCE260 style guidelines](https://learn.canterbury.ac.nz/pluginfile.php/529635/mod_resource/content/8/styleguidelines.html), with a few differences:
+
+- In keeping with the variable and function name style in the APIs, variables and function names are lowercase with words separated by underscores, as necessary.
+- `enum`s do not start with an uppercase, as this is used by their `typedef` definition.
