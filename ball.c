@@ -93,8 +93,7 @@ void handle_ball_puck_collision_west(void)
 }
 
 /**
- * @brief Hanles collisions where the ball's direction is south_west
- * 
+ * @brief Handles collisions where the ball's direction is south_west
  */
 void handle_ball_puck_collision_south_west(void)
 {
@@ -119,13 +118,35 @@ void handle_ball_puck_collision_south_west(void)
     }
 }
 
-void handle_ball_puck_collision_south_east(void)
+/**
+ * @brief Handles collisions where the ball's direction is south_west
+ */
+void handle_ball_puck_collision_north_west(void)
 {
+    if (ball.new_column == PUCK_COL)
+    {
+
+        ball.new_column = 2;
+        if (ball.old_row == puck.new_top)
+        {
+            ball.direction = north_east;
+            ball.velocity += 2;
+        }
+        else if (ball.old_row == puck.new_top - 1) // middle
+        {
+            ball.direction = east;
+            ball.new_row = ball.old_row;
+        }
+        else if (ball.old_row == puck.new_bottom)
+        {
+            ball.direction = north_east;
+            ball.velocity += 1;
+        }
+    }
 }
 
 /**
- * @brief Checks to see if the proposed location for the ball is currently occupied by
- * the puck
+ * @brief Checks to see if the proposed location for the ball is currently occupied by the puck
  * @return true The ball is in the puck
  * @return false The ball is not in the puck
  */
@@ -139,9 +160,9 @@ void handle_ball_puck_collision(void)
     {
         handle_ball_puck_collision_south_west();
     }
-    else if (ball.direction == south_east)
+    else if (ball.direction == north_west)
     {
-        handle_ball_puck_collision_south_east();
+        handle_ball_puck_collision_north_west();
     }
 }
 
@@ -226,10 +247,10 @@ void ball_init(void)
     Ball new_ball = {
         .old_row = 0,
         .old_column = 0,
-        .new_row = 5,
-        .new_column = 2,
+        .new_row = 3,
+        .new_column = 0,
         .velocity = 1,
-        .direction = south_west};
+        .direction = west};
     ball = new_ball;
 
     ball_update_display();
