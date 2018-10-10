@@ -10,7 +10,6 @@
  * @note The bottom of the board is the side closest to the USB port. The south side is the bottom side of the board. 
  */
 #include <stdlib.h>
-#include <time.h>
 #include "display.h"
 #include "ball.h"
 #include "puck.h"
@@ -22,21 +21,6 @@
  * 
  */
 static Ball ball = {0};
-
-/**
- * @brief Returns a random value from the specified range.
- * This implementation is limited to values from 0 to 255, given that it uses uint8_t.
- * Based on https://stackoverflow.com/a/27712884/5018082
- * @param lower_limit Lower limit, inclusive. 0 <= lower_limit <= 255
- * @param upper_limit Upper limit, inclusive. 0 <= lower_limit <= 255
- * @return uint8_t Generated random value
- */
-uint8_t random_from_range(uint8_t lower_limit, uint8_t upper_limit)
-{
-    srand(time(NULL)); // ensures that the seed is different each time
-    float value = ((float)lower_limit + ((float)upper_limit) * rand()) / RAND_MAX;
-    return (uint8_t)value;
-}
 
 /**
  * @brief Updates the ball in the board/display.
