@@ -4,5 +4,10 @@
     "io.h": "c",
     "led.h": "c"
   },
-  "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\bash.exe"
+  "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\bash.exe",
+  "files.exclude": {
+    "**/*.hex": true,
+    "**/*.o": true,
+    "**/*.out": true
+  }
 }

@@ -1,16 +1,17 @@
 /**
  * @file puck.h
  * @author Isaac Daly (idd17@uclive.ac.nz)
- * @brief Contains the puck's function declarations and macro definitions which are to 
- * be shared with other files. 
- * @version 0.1
- * @date 2018-10-08
- * 
+ * @brief Contains the puck's function declarations and macro definitions which are to
+ * be shared with other files.
+ * @version 0.2
+ * @date 2018-10-10
+ *
  * @copyright Copyright (c) 2018
- * 
+ *
  */
 #ifndef PUCK_H
 #define PUCK_H
+#include "navswitch.h"
 #include "system.h"
 
 /**
@@ -19,15 +20,38 @@
 #define PUCK_COL 4
 
 /**
+ * @brief Arbitrary numbers for the starting old_* attributes
+ */
+#define STARTING_OLD 0
+
+/**
+ * @brief The initial top column for the puck.
+ */
+#define STARTING_TOP 4
+
+/**
+ * @brief The initial bottom column for the puck.
+ */
+#define STARTING_BOTTOM 2
+
+/**
+ * @brief Corrected the name, according to the compass scheme (see media/compass.png).
+ * South on this game's compass is defined as North in navswitch.h
+ */
+#define NAVSWITCH_COMPASS_SOUTH NAVSWITCH_NORTH
+
+/**
+ * @brief Corrected the name, according to the compass scheme (see media/compass.png).
+ * North on this game's compass is defined as South in navswitch.h
+ */
+#define NAVSWITCH_COMPASS_NORTH NAVSWITCH_SOUTH
+
+/**
  * @brief Specifies the values for the movement of the navswitch.
  * It is assumed that the orientation of the device is such that the IR I/O is faced away
  * from the player.
  */
-typedef enum nav_movement_e
-{
-    left = -1,
-    right = 1
-} NavMovement;
+typedef enum nav_movement_e { PUCK_MOVE_SOUTH = -1, PUCK_MOVE_NORTH = 1 } NavMovement;
 
 /**
  * @brief Definition for the Puck type. The old values are kept in order to wipe them from
@@ -47,6 +71,6 @@ void puck_init(void);
 
 void puck_update_value(NavMovement change);
 
-void puck_task(__unused__ void *data);
+void puck_task(__unused__ void* data);
 
 #endif
