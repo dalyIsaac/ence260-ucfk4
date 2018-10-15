@@ -25,24 +25,26 @@ void negotiate_first_player(void)
     int8_t received_data = 0;
 
     pacer_wait();
-    if (ir_uart_read_ready_p()) {
+    if (ir_uart_read_ready_p()) { // receives data first, so is player 2
         received_data = ir_uart_getc();
-        if (received_data == 1) {
+        if (received_data == 2) {
+            ir_uart_putc(1);
+
             while (1) { // remove later
-                tinygl_text("1");
+                tinygl_text("2");
                 tinygl_update();
                 pacer_wait();
             }
         }
     } else {
-        while (received_data != 2) {
-            ir_uart_putc(1);
+        while (received_data != 1) { // sends data first, so is player 1
+            ir_uart_putc(2);
             pacer_wait();
             received_data = ir_uart_getc();
         }
 
-        tinygl_text("2"); // remove later
-        while (1) {       // remove later
+        while (1) { // remove later
+            tinygl_text("1");
             tinygl_update();
             pacer_wait();
         }
