@@ -1,8 +1,9 @@
 # File:   Makefile
 # Author: Isaac Daly (idd17@uclive.ac.nz)
-# Date:   2018-10-10
+# Author: Divyean Sivarman (dsi3@uclive.ac.nz)
+# Date:   2018-10-16
 # Descr:  Makefile for game
-# Version: 0.2
+# Version: 0.3
 
 # Definitions.
 CC = avr-gcc
@@ -20,7 +21,7 @@ all: game.out
 game.o: game.c ../../drivers/avr/pio.h ../../drivers/avr/system.h  ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-board.o: board.c ../../drivers/avr/pio.h ../../drivers/avr/system.h 
+board.o: board.c ../../drivers/avr/pio.h ../../drivers/avr/system.h  
 	$(CC) -c $(CFLAGS) $< -o $@
 
 puck.o: puck.c  ../../drivers/avr/system.h ../../drivers/navswitch.h
@@ -50,9 +51,18 @@ navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/a
 task.o: ../../utils/task.c ../../utils/task.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.h ../../utils/font.h ../../utils/tinygl.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+font.o: ../../utils/font.c ../../drivers/avr/system.h ../../utils/font.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+pacer.o: ../../utils/pacer.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../utils/pacer.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 
 # Link: create ELF output file from object files.
-game.out: game.o board.o puck.o ball.o ledmat.o display.o pio.o system.o timer.o navswitch.o task.o 
+game.out: game.o board.o puck.o ball.o ledmat.o display.o pio.o system.o timer.o navswitch.o task.o tinygl.o font.o pacer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
