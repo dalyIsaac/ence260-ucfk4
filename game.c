@@ -1,9 +1,10 @@
 /**
  * @file game.c
  * @author Isaac Daly (idd17@uclive.ac.nz)
+ * @author Divyean Sivarman (dsi3@uclive.ac.nz)
  * @brief Main module for the game
- * @version 0.2
- * @date 2018-10-10
+ * @version 0.3
+ * @date 2018-10-16
  *
  * @copyright Copyright (c) 2018
  *
@@ -11,7 +12,6 @@
 
 #include "game.h"
 
-#include "../fonts/font3x5_1.h"
 #include "ball.h"
 #include "board.h"
 #include "navswitch.h"
@@ -32,6 +32,10 @@ int main(void)
 
     system_init();
     navswitch_init();
+
+    text_init();
+    show_initial_text();
+
     board_init();
     puck_init();
     ball_init();
