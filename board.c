@@ -13,6 +13,7 @@
 #include "board.h"
 
 #include "../fonts/font5x7_1.h"
+#include "ball.h"
 #include "display.h"
 #include "ir_uart.h"
 #include "navswitch.h"
@@ -20,6 +21,9 @@
 #include "pio.h"
 #include "tinygl.h"
 
+/**
+ * @brief Negotiates who the first player is.
+ */
 void negotiate_first_player(void)
 {
     int8_t received_data = 0;
@@ -29,12 +33,7 @@ void negotiate_first_player(void)
         received_data = ir_uart_getc();
         if (received_data == 2) {
             ir_uart_putc(1);
-
-            while (1) { // remove later
-                tinygl_text("2");
-                tinygl_update();
-                pacer_wait();
-            }
+            have_ball = false;
         }
     } else {
         while (received_data != 1) { // sends data first, so is player 1
@@ -42,12 +41,7 @@ void negotiate_first_player(void)
             pacer_wait();
             received_data = ir_uart_getc();
         }
-
-        while (1) { // remove later
-            tinygl_text("1");
-            tinygl_update();
-            pacer_wait();
-        }
+        have_ball = true;
     }
 }
 

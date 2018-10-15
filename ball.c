@@ -16,6 +16,8 @@
 #include "display.h"
 #include "puck.h"
 
+bool have_ball = false;
+
 /**
  * @brief Ball for the game
  *

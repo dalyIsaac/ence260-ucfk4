@@ -27,9 +27,9 @@
  */
 int main(void)
 {
-    // task_t tasks[] = {{.func = board_task, .period = TASK_RATE / BOARD_DISPLAY_TASK_RATE},
-    //                   {.func = puck_task, .period = TASK_RATE / PUCK_TASK_RATE},
-    //                   {.func = ball_task, .period = TASK_RATE / BALL_TASK_RATE}};
+    task_t tasks[] = {{.func = board_task, .period = TASK_RATE / BOARD_DISPLAY_TASK_RATE},
+                      {.func = puck_task, .period = TASK_RATE / PUCK_TASK_RATE},
+                      {.func = ball_task, .period = TASK_RATE / BALL_TASK_RATE}};
 
     system_init();
     navswitch_init();
@@ -40,9 +40,11 @@ int main(void)
 
     negotiate_first_player();
 
-    // board_init();
-    // puck_init();
-    // ball_init();
+    board_init();
+    puck_init();
+    if (have_ball) {
+        ball_init();
+    }
 
-    // task_schedule(tasks, ARRAY_SIZE(tasks));
+    task_schedule(tasks, ARRAY_SIZE(tasks));
 }
