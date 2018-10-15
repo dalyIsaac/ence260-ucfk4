@@ -14,6 +14,7 @@
 
 #include "ball.h"
 #include "board.h"
+#include "ir_uart.h"
 #include "navswitch.h"
 #include "pio.h"
 #include "puck.h"
@@ -26,19 +27,22 @@
  */
 int main(void)
 {
-    task_t tasks[] = {{.func = board_task, .period = TASK_RATE / BOARD_DISPLAY_TASK_RATE},
-                      {.func = puck_task, .period = TASK_RATE / PUCK_TASK_RATE},
-                      {.func = ball_task, .period = TASK_RATE / BALL_TASK_RATE}};
+    // task_t tasks[] = {{.func = board_task, .period = TASK_RATE / BOARD_DISPLAY_TASK_RATE},
+    //                   {.func = puck_task, .period = TASK_RATE / PUCK_TASK_RATE},
+    //                   {.func = ball_task, .period = TASK_RATE / BALL_TASK_RATE}};
 
     system_init();
     navswitch_init();
+    ir_uart_init();
 
     text_init();
     show_initial_text();
 
-    board_init();
-    puck_init();
-    ball_init();
+    negotiate_first_player();
 
-    task_schedule(tasks, ARRAY_SIZE(tasks));
+    // board_init();
+    // puck_init();
+    // ball_init();
+
+    // task_schedule(tasks, ARRAY_SIZE(tasks));
 }

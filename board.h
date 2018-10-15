@@ -28,6 +28,8 @@
  */
 #define TOP_ROW LEDMAT_ROWS_NUM - 1
 
+void negotiate_first_player(void);
+
 void text_init(void);
 
 void show_initial_text(void);

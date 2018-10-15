@@ -14,12 +14,40 @@
 
 #include "../fonts/font5x7_1.h"
 #include "display.h"
+#include "ir_uart.h"
 #include "navswitch.h"
 #include "pacer.h"
 #include "pio.h"
 #include "tinygl.h"
 
-bool start_game = false;
+void negotiate_first_player(void)
+{
+    int8_t received_data = 0;
+
+    pacer_wait();
+    if (ir_uart_read_ready_p()) {
+        received_data = ir_uart_getc();
+        if (received_data == 1) {
+            while (1) { // remove later
+                tinygl_text("1");
+                tinygl_update();
+                pacer_wait();
+            }
+        }
+    } else {
+        while (received_data != 2) {
+            ir_uart_putc(1);
+            pacer_wait();
+            received_data = ir_uart_getc();
+        }
+
+        tinygl_text("2"); // remove later
+        while (1) {       // remove later
+            tinygl_update();
+            pacer_wait();
+        }
+    }
+}
 
 /**
  * @brief Initialises tinygl and the pacer.
@@ -38,6 +66,7 @@ void text_init(void)
  */
 void show_initial_text(void)
 {
+    bool start_game = false;
     tinygl_text("PONG");
     while (!start_game) {
         pacer_wait();
