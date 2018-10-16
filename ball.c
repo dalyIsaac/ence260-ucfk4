@@ -330,8 +330,7 @@ void ball_init(void)
                          .old_column = STARTING_OLD,
                          .new_row = STARTING_ROW,
                          .new_column = STARTING_COLUMN,
-                         .velocity = 1,
-                         //  .velocity = STARTING_VELOCITY,
+                         .velocity = STARTING_VELOCITY,
                          .direction = STARTING_DIRECTION};
         ball = new_ball;
         ball_update_display();
