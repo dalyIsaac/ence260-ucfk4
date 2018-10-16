@@ -32,10 +32,7 @@ void ball_transmit(void)
     ir_uart_putc(ball_values);
     ball.old_row = ball.new_row;
     ball.old_column = ball.new_column;
-    ball.new_row = -1; // completely removes the ball from the board
-    ball.new_column = -1;
-    ball.direction = 0; // undefined direction
-    ball.velocity = 4;
+    have_ball = false;
 }
 
 int8_t get_direction(int8_t ball_values)
@@ -65,13 +62,7 @@ void ball_receive(void)
         ball.new_row = ball_values >> 5;
         ball.velocity = get_velocity(ball_values);
         ball.direction = get_direction(ball_values);
-    }
-}
-
-void handle_ball_transmission(void)
-{
-    if (ball.new_column == -1) {
-        ball_transmit();
+        have_ball = true;
     }
 }
 
@@ -81,7 +72,16 @@ void handle_ball_transmission(void)
 void ball_update_display(void)
 {
     display_pixel_set(ball.old_column, ball.old_row, false);
-    display_pixel_set(ball.new_column, ball.new_row, true);
+    if (have_ball) {
+        display_pixel_set(ball.new_column, ball.new_row, true);
+    }
+}
+
+void handle_ball_transmission(void)
+{
+    if (have_ball) {
+        ball_transmit();
+    }
 }
 
 /**
@@ -258,7 +258,8 @@ void ball_init(void)
                          .old_column = STARTING_OLD,
                          .new_row = STARTING_ROW,
                          .new_column = STARTING_COLUMN,
-                         .velocity = STARTING_VELOCITY,
+                         .velocity = 2,
+                         //  .velocity = STARTING_VELOCITY,
                          .direction = STARTING_DIRECTION};
         ball = new_ball;
     } else {
@@ -310,10 +311,11 @@ void ball_task(__unused__ void* data)
     uint8_t variable_period = VARIABLE_PERIOD_NUMERATOR / ball.velocity;
     for (uint8_t i = 0; i < ball.velocity; i++) {
         if (can_update(time_to_check)) {
-            if (ball.new_column == -1 && ball.new_row == -1) {
+            if (!have_ball) {
                 ball_receive();
+            } else {
+                ball_update_value();
             }
-            ball_update_value();
             counter++;
             return;
         }
