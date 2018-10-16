@@ -316,6 +316,10 @@ void ball_update_value(void)
     handle_ball_wall_collision();
     handle_ball_transmission();
 
+    if (ball.velocity > 4) {
+        ball.velocity = 4;
+    }
+
     ball_update_display();
 }
 
