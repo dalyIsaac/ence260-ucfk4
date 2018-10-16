@@ -14,9 +14,12 @@
 
 #include "board.h"
 #include "display.h"
+#include "ir_uart.h"
 #include "puck.h"
 
 bool have_ball = false;
+
+bool lost_game = false;
 
 /**
  * @brief Ball for the game
@@ -24,13 +27,114 @@ bool have_ball = false;
  */
 static Ball ball;
 
+void ball_transmit(void)
+{
+    // subtract a value from ball.velocity to ensure that it can fit inside 8 bits
+    int8_t ball_values = (ball.new_row << 5) | ((ball.velocity - 1) << 3) | ball.direction;
+    ir_uart_putc(ball_values);
+    have_ball = false;
+}
+
+int8_t get_direction(int8_t ball_values)
+{
+    int8_t direction = ball_values;
+    for (int8_t i = 3; i < 8; i++) {
+        direction &= ~(1 << i);
+    }
+    return direction;
+}
+
+int8_t get_velocity(int8_t ball_values)
+{
+    int8_t velocity = ball_values >> 3;
+    for (int8_t i = 2; i < 8; i++) {
+        velocity &= ~(1 << i); // wipes the bits
+    }
+    velocity += 1;
+    return velocity;
+}
+
+int8_t get_new_row(int8_t ball_values)
+{
+    int8_t new_row = (ball_values >> 5);
+    switch (new_row) {
+        case 0:
+            return 6;
+            break;
+        case 1:
+            return 5;
+            break;
+        case 2:
+            return 4;
+            break;
+        case 3:
+            return 3;
+            break;
+        case -4:
+            return 2;
+            break;
+        case -3:
+            return 1;
+            break;
+        case -2:
+            return 0;
+            break;
+    }
+    return new_row;
+}
+
+void ball_receive(void)
+{
+    if (ir_uart_read_ready_p()) {
+        int8_t ball_values = ir_uart_getc();
+
+        int8_t new_row = get_new_row(ball_values);
+        int8_t velocity = get_velocity(ball_values);
+        int8_t direction = get_direction(ball_values);
+
+        ball.velocity = velocity;
+
+        switch (direction) {
+            case EAST:
+                ball.direction = WEST;
+                ball.new_row = new_row;
+                break;
+            case SOUTH_EAST:
+                ball.direction = NORTH_WEST;
+                ball.new_row = new_row - 1;
+                break;
+            case NORTH_EAST:
+                ball.direction = SOUTH_WEST;
+                ball.new_row = new_row + 1;
+                break;
+            default:
+                break;
+        }
+
+        ball.old_row = STARTING_OLD;
+        ball.old_column = STARTING_OLD;
+        ball.new_column = -1;
+
+        have_ball = true;
+    }
+}
+
 /**
  * @brief Updates the ball in the board/display.
  */
 void ball_update_display(void)
 {
     display_pixel_set(ball.old_column, ball.old_row, false);
-    display_pixel_set(ball.new_column, ball.new_row, true);
+    if (have_ball) {
+        display_pixel_set(ball.new_column, ball.new_row, true);
+    }
+}
+
+void handle_ball_transmission(void)
+{
+    if (have_ball && ball.new_column == -1) {
+        ball_transmit();
+    }
 }
 
 /**
@@ -45,17 +149,19 @@ ImpactPoint get_impact_point(void)
             return IMPACT_BOTTOM;
         } else if (ball.new_row == puck.new_top) {
             return IMPACT_TOP;
+        } else if (puck.new_bottom <= ball.new_row && ball.new_row <= puck.new_top) {
+            return IMPACT_MIDDLE;
         }
-        return IMPACT_MIDDLE;
     } else if (ball.direction == SOUTH_WEST || ball.direction == NORTH_WEST) {
         if (ball.old_row == puck.new_top) {
             return IMPACT_TOP;
         } else if (ball.old_row == puck.new_bottom) {
             return IMPACT_BOTTOM;
+        } else if (puck.new_bottom <= ball.new_row && ball.new_row <= puck.new_top) {
+            return IMPACT_MIDDLE;
         }
-        return IMPACT_MIDDLE;
     }
-    return IMPACT_MIDDLE; // this should never be reached
+    return NO_IMPACT;
 }
 
 /**
@@ -75,6 +181,11 @@ void handle_ball_puck_collision_west(void)
         } else if (impact == IMPACT_BOTTOM) {
             ball.direction = SOUTH_EAST;
             ball.new_row--;
+        } else if (impact == NO_IMPACT) {
+            ball.new_row = 0;
+            ball.new_column = 0;
+            ball.direction = WEST;
+            lost_game = true;
         }
     }
 }
@@ -96,6 +207,11 @@ void handle_ball_puck_collision_south_west(void)
         } else if (impact == IMPACT_BOTTOM) {
             ball.direction = SOUTH_EAST;
             ball.velocity += 2;
+        } else if (impact == NO_IMPACT) {
+            ball.new_row = ball.old_row - 1;
+            ball.new_column = 4;
+            ball.direction = WEST;
+            lost_game = true;
         }
     }
 }
@@ -117,6 +233,11 @@ void handle_ball_puck_collision_north_west(void)
         } else if (impact == IMPACT_BOTTOM) {
             ball.direction = NORTH_EAST;
             ball.velocity++;
+        } else if (impact == NO_IMPACT) {
+            ball.new_row = ball.old_row + 1;
+            ball.new_column = 4;
+            ball.direction = WEST;
+            lost_game = true;
         }
     }
 }
@@ -143,9 +264,11 @@ void handle_ball_puck_collision(void)
  */
 void set_ball_column_movement(void)
 {
-    if (ball.direction >= NORTH_EAST) { // based on the direction compass. This includes NE, E, SE
+    if (NORTH_EAST <= ball.direction && ball.direction <= SOUTH_EAST) {
+        // based on the direction compass. This includes NE, E, SE
         ball.new_column--;
-    } else if (ball.direction <= NORTH_WEST) { // This includes NW, W, SW
+    } else if (SOUTH_WEST <= ball.direction && ball.direction <= NORTH_WEST) {
+        // This includes NW, W, SW
         ball.new_column++;
     }
 }
@@ -191,6 +314,7 @@ void ball_update_value(void)
 
     handle_ball_puck_collision();
     handle_ball_wall_collision();
+    handle_ball_transmission();
 
     ball_update_display();
 }
@@ -201,15 +325,24 @@ void ball_update_value(void)
  */
 void ball_init(void)
 {
-    Ball new_ball = {.old_row = STARTING_OLD,
-                     .old_column = STARTING_OLD,
-                     .new_row = STARTING_ROW,
-                     .new_column = STARTING_COLUMN,
-                     .velocity = STARTING_VELOCITY,
-                     .direction = STARTING_DIRECTION};
-    ball = new_ball;
-
-    ball_update_display();
+    if (have_ball) {
+        Ball new_ball = {.old_row = STARTING_OLD,
+                         .old_column = STARTING_OLD,
+                         .new_row = STARTING_ROW,
+                         .new_column = STARTING_COLUMN,
+                         .velocity = STARTING_VELOCITY,
+                         .direction = STARTING_DIRECTION};
+        ball = new_ball;
+        ball_update_display();
+    } else {
+        Ball new_ball = {.old_row = STARTING_OLD,
+                         .old_column = STARTING_OLD,
+                         .new_row = -1,
+                         .new_column = -1,
+                         .velocity = 1,
+                         .direction = STARTING_OLD};
+        ball = new_ball;
+    }
 }
 
 /**
@@ -248,7 +381,11 @@ void ball_task(__unused__ void* data)
     uint8_t variable_period = VARIABLE_PERIOD_NUMERATOR / ball.velocity;
     for (uint8_t i = 0; i < ball.velocity; i++) {
         if (can_update(time_to_check)) {
-            ball_update_value();
+            if (!have_ball) {
+                ball_receive();
+            } else {
+                ball_update_value();
+            }
             counter++;
             return;
         }

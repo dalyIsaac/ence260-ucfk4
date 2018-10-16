@@ -42,9 +42,7 @@ int main(void)
 
     board_init();
     puck_init();
-    if (have_ball) {
-        ball_init();
-    }
+    ball_init();
 
     task_schedule(tasks, ARRAY_SIZE(tasks));
 }
