@@ -39,21 +39,6 @@ int8_t get_direction(int8_t ball_values)
     for (int8_t i = 3; i < 8; i++) {
         direction &= ~(1 << i);
     }
-
-    switch (direction) {
-        case EAST:
-            direction = WEST;
-            break;
-        case NORTH_EAST:
-            direction = NORTH_WEST;
-            break;
-        case SOUTH_EAST:
-            direction = SOUTH_WEST;
-            break;
-        default:
-            // the received directions should always be *WEST, which is *EAST on the current board
-            break;
-    }
     return direction;
 }
 
@@ -69,7 +54,7 @@ int8_t get_velocity(int8_t ball_values)
 
 int8_t get_new_row(int8_t ball_values)
 {
-    int8_t new_row = 6 - (ball_values >> 5);
+    int8_t new_row = (ball_values >> 5);
     return new_row;
 }
 
@@ -78,9 +63,33 @@ void ball_receive(void)
     if (ir_uart_read_ready_p()) {
         int8_t ball_values = ir_uart_getc();
 
-        ball.new_row = get_new_row(ball_values);
-        ball.velocity = get_velocity(ball_values);
-        ball.direction = get_direction(ball_values);
+        int8_t new_row = get_new_row(ball_values);
+        int8_t velocity = get_velocity(ball_values);
+        int8_t direction = get_direction(ball_values);
+
+        ball.velocity = velocity;
+
+        if (new_row == 1 && direction == NORTH_EAST) {
+            ball.new_row = 6;
+            ball.direction = SOUTH_WEST;
+        } else if (new_row == 5 && direction == SOUTH_EAST) {
+            ball.new_row = 0;
+            ball.direction = NORTH_WEST;
+        } else {
+            switch (direction) {
+                case EAST:
+                    ball.direction = WEST;
+                    break;
+                case SOUTH_EAST:
+                    ball.direction = NORTH_WEST;
+                    break;
+                case NORTH_EAST:
+                    ball.direction = SOUTH_WEST;
+                default:
+                    break;
+            }
+            ball.new_row = 6 - new_row;
+        }
 
         ball.old_row = STARTING_OLD;
         ball.old_column = STARTING_OLD;
