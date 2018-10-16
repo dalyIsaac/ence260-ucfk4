@@ -28,7 +28,7 @@ static Ball ball;
 void ball_transmit(void)
 {
     // subtract a value from ball.velocity to ensure that it can fit inside 8 bits
-    int8_t ball_values = (ball.new_row) | ((ball.velocity - 1) << 3) | ball.direction;
+    int8_t ball_values = (ball.new_row << 5) | ((ball.velocity - 1) << 3) | ball.direction;
     ir_uart_putc(ball_values);
     have_ball = false;
 }
@@ -38,6 +38,21 @@ int8_t get_direction(int8_t ball_values)
     int8_t direction = ball_values;
     for (int8_t i = 3; i < 8; i++) {
         direction &= ~(1 << i);
+    }
+
+    switch (direction) {
+        case EAST:
+            direction = WEST;
+            break;
+        case NORTH_EAST:
+            direction = SOUTH_WEST;
+            break;
+        case SOUTH_EAST:
+            direction = NORTH_WEST;
+            break;
+        default:
+            // the received directions should always be *WEST, which is *EAST on the current board
+            break;
     }
     return direction;
 }
@@ -63,10 +78,7 @@ void ball_receive(void)
 
         ball.old_row = STARTING_OLD;
         ball.old_column = STARTING_OLD;
-        ball.new_row = STARTING_ROW;
-        ball.new_column = STARTING_COLUMN;
-        ball.velocity = 2;
-        // ball.direction = STARTING_DIRECTION;
+        ball.new_column = -1;
 
         have_ball = true;
     }
@@ -266,8 +278,7 @@ void ball_init(void)
                          .old_column = STARTING_OLD,
                          .new_row = STARTING_ROW,
                          .new_column = STARTING_COLUMN,
-                         .velocity = 2,
-                         //  .velocity = STARTING_VELOCITY,
+                         .velocity = STARTING_VELOCITY,
                          .direction = STARTING_DIRECTION};
         ball = new_ball;
         ball_update_display();
@@ -277,7 +288,7 @@ void ball_init(void)
                          .new_row = -1,
                          .new_column = -1,
                          .velocity = 1,
-                         .direction = 4};
+                         .direction = STARTING_OLD};
         ball = new_ball;
     }
 }

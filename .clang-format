@@ -17,7 +17,7 @@ BraceWrapping:
   AfterUnion: true
   BeforeElse: false
 
-
+IndentCaseLabels: true
 AlwaysBreakTemplateDeclarations: true
 BreakConstructorInitializersBeforeComma: true
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
