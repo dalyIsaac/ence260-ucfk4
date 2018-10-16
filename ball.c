@@ -28,7 +28,7 @@ static Ball ball;
 void ball_transmit(void)
 {
     // subtract a value from ball.velocity to ensure that it can fit inside 8 bits
-    int8_t ball_values = (ball.new_row) | ((ball.velocity - 1) << 3) | direction;
+    int8_t ball_values = (ball.new_row) | ((ball.velocity - 1) << 3) | ball.direction;
     ir_uart_putc(ball_values);
     ball.old_row = ball.new_row;
     ball.old_column = ball.new_column;
@@ -60,7 +60,7 @@ int8_t get_velocity(int8_t ball_values)
 void ball_receive(void)
 {
     if (ir_uart_read_ready_p()) {
-        ball_values = ir_uart_getc();
+        int8_t ball_values = ir_uart_getc();
 
         ball.new_row = ball_values >> 5;
         ball.velocity = get_velocity(ball_values);
@@ -268,6 +268,7 @@ void ball_init(void)
                          .new_column = -1,
                          .velocity = 0,
                          .direction = 4};
+        ball = new_ball;
     }
 
     ball_update_display();
