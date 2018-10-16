@@ -44,12 +44,12 @@
  * @brief Specifies the values for the various directions.
  */
 typedef enum direction_e {
-    NORTH_EAST = 1,
-    EAST = 2,
-    SOUTH_EAST = 3,
-    NORTH_WEST = -1,
-    WEST = -2,
-    SOUTH_WEST = -3
+    NORTH_EAST = 0,
+    EAST = 1,
+    SOUTH_EAST = 2,
+    SOUTH_WEST = 3,
+    WEST = 4,
+    NORTH_WEST = 5,
 } Direction;
 
 /**

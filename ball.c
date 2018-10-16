@@ -55,22 +55,18 @@ int8_t get_velocity(int8_t ball_values)
 void ball_receive(void)
 {
     if (ir_uart_read_ready_p()) {
-        // int8_t ball_values = ir_uart_getc();
+        int8_t ball_values = ir_uart_getc();
 
-        // ball.new_row = ball_values >> 5;
-        // ball.velocity = get_velocity(ball_values);
-        // ball.direction = get_direction(ball_values);
-        // have_ball = true;
-        ir_uart_getc();
+        ball.new_row = ball_values >> 5;
+        ball.velocity = get_velocity(ball_values);
+        ball.direction = get_direction(ball_values);
 
-        Ball new_ball = {.old_row = STARTING_OLD,
-                         .old_column = STARTING_OLD,
-                         .new_row = STARTING_ROW,
-                         .new_column = STARTING_COLUMN,
-                         .velocity = 2,
-                         //  .velocity = STARTING_VELOCITY,
-                         .direction = STARTING_DIRECTION};
-        ball = new_ball;
+        ball.old_row = STARTING_OLD;
+        ball.old_column = STARTING_OLD;
+        ball.new_row = STARTING_ROW;
+        ball.new_column = STARTING_COLUMN;
+        ball.velocity = 2;
+        // ball.direction = STARTING_DIRECTION;
 
         have_ball = true;
     }
