@@ -30,8 +30,6 @@ void ball_transmit(void)
     // subtract a value from ball.velocity to ensure that it can fit inside 8 bits
     int8_t ball_values = (ball.new_row) | ((ball.velocity - 1) << 3) | ball.direction;
     ir_uart_putc(ball_values);
-    ball.old_row = ball.new_row;
-    ball.old_column = ball.new_column;
     have_ball = false;
 }
 
@@ -57,11 +55,23 @@ int8_t get_velocity(int8_t ball_values)
 void ball_receive(void)
 {
     if (ir_uart_read_ready_p()) {
-        int8_t ball_values = ir_uart_getc();
+        // int8_t ball_values = ir_uart_getc();
 
-        ball.new_row = ball_values >> 5;
-        ball.velocity = get_velocity(ball_values);
-        ball.direction = get_direction(ball_values);
+        // ball.new_row = ball_values >> 5;
+        // ball.velocity = get_velocity(ball_values);
+        // ball.direction = get_direction(ball_values);
+        // have_ball = true;
+        ir_uart_getc();
+
+        Ball new_ball = {.old_row = STARTING_OLD,
+                         .old_column = STARTING_OLD,
+                         .new_row = STARTING_ROW,
+                         .new_column = STARTING_COLUMN,
+                         .velocity = 2,
+                         //  .velocity = STARTING_VELOCITY,
+                         .direction = STARTING_DIRECTION};
+        ball = new_ball;
+
         have_ball = true;
     }
 }
@@ -79,7 +89,7 @@ void ball_update_display(void)
 
 void handle_ball_transmission(void)
 {
-    if (have_ball) {
+    if (have_ball && ball.new_column == -1) {
         ball_transmit();
     }
 }
