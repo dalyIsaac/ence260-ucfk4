@@ -33,8 +33,8 @@ void transmit_lost(void)
 {
     lost_game = true;
     continue_game = false;
-    int8_t transmit_value = 255 << 0;
-    ir_uart_putc(transmit_value);
+    int8_t ball_values = 6;
+    ir_uart_putc(ball_values);
 }
 
 void ball_transmit(void)
@@ -126,6 +126,10 @@ void ball_receive(void)
         ball.new_column = -1;
 
         have_ball = true;
+
+        if (ball_values == 6) { // You've won
+            continue_game = false;
+        }
     }
 }
 
@@ -345,7 +349,8 @@ void ball_init(void)
                          .old_column = STARTING_OLD,
                          .new_row = STARTING_ROW,
                          .new_column = STARTING_COLUMN,
-                         .velocity = STARTING_VELOCITY,
+                         .velocity = 4,
+                         //  .velocity = STARTING_VELOCITY,
                          .direction = STARTING_DIRECTION};
         ball = new_ball;
         ball_update_display();
