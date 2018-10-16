@@ -200,9 +200,11 @@ void handle_ball_puck_collision(void)
  */
 void set_ball_column_movement(void)
 {
-    if (ball.direction >= NORTH_EAST) { // based on the direction compass. This includes NE, E, SE
+    if (NORTH_EAST <= ball.direction && ball.direction <= SOUTH_EAST) {
+        // based on the direction compass. This includes NE, E, SE
         ball.new_column--;
-    } else if (ball.direction <= NORTH_WEST) { // This includes NW, W, SW
+    } else if (SOUTH_WEST <= ball.direction && ball.direction <= NORTH_WEST) {
+        // This includes NW, W, SW
         ball.new_column++;
     }
 }
