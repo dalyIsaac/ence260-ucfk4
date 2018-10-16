@@ -14,6 +14,7 @@
 
 #include "ball.h"
 #include "board.h"
+#include "ir_uart.h"
 #include "navswitch.h"
 #include "pio.h"
 #include "puck.h"
@@ -32,13 +33,18 @@ int main(void)
 
     system_init();
     navswitch_init();
+    ir_uart_init();
 
     text_init();
     show_initial_text();
 
+    negotiate_first_player();
+
     board_init();
     puck_init();
-    ball_init();
+    if (have_ball) {
+        ball_init();
+    }
 
     task_schedule(tasks, ARRAY_SIZE(tasks));
 }

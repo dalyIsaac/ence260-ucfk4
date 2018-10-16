@@ -13,13 +13,37 @@
 #include "board.h"
 
 #include "../fonts/font5x7_1.h"
+#include "ball.h"
 #include "display.h"
+#include "ir_uart.h"
 #include "navswitch.h"
 #include "pacer.h"
 #include "pio.h"
 #include "tinygl.h"
 
-bool start_game = false;
+/**
+ * @brief Negotiates who the first player is.
+ */
+void negotiate_first_player(void)
+{
+    int8_t received_data = 0;
+
+    pacer_wait();
+    if (ir_uart_read_ready_p()) { // receives data first, so is player 2
+        received_data = ir_uart_getc();
+        if (received_data == 2) {
+            ir_uart_putc(1);
+            have_ball = false;
+        }
+    } else {
+        while (received_data != 1) { // sends data first, so is player 1
+            ir_uart_putc(2);
+            pacer_wait();
+            received_data = ir_uart_getc();
+        }
+        have_ball = true;
+    }
+}
 
 /**
  * @brief Initialises tinygl and the pacer.
@@ -38,6 +62,7 @@ void text_init(void)
  */
 void show_initial_text(void)
 {
+    bool start_game = false;
     tinygl_text("PONG");
     while (!start_game) {
         pacer_wait();

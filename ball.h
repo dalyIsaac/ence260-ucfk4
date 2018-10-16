@@ -74,6 +74,8 @@ typedef struct ball_s
  */
 typedef enum impact_point_e { IMPACT_BOTTOM = 0, IMPACT_MIDDLE = 1, IMPACT_TOP = 2 } ImpactPoint;
 
+bool have_ball;
+
 void ball_update_value(void);
 
 void ball_init(void);
