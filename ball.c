@@ -94,31 +94,21 @@ void ball_receive(void)
 
         ball.velocity = velocity;
 
-        if (new_row == 1 && direction == NORTH_EAST) {
-            ball.new_row = 6;
-            ball.direction = SOUTH_WEST;
-        } else if (new_row == -2 && direction == SOUTH_EAST) {
-            // value is -2, but that doesn't seem to work
-            // } else if (new_row == 6 && direction == SOUTH_EAST) {
-            ball.new_row = 0;
-            ball.direction = NORTH_WEST;
-        } else {
-            switch (direction) {
-                case EAST:
-                    ball.direction = WEST;
-                    ball.new_row = new_row;
-                    break;
-                case SOUTH_EAST:
-                    ball.direction = NORTH_WEST;
-                    ball.new_row = new_row - 1;
-                    break;
-                case NORTH_EAST:
-                    ball.direction = SOUTH_WEST;
-                    ball.new_row = new_row + 1;
-                    break;
-                default:
-                    break;
-            }
+        switch (direction) {
+            case EAST:
+                ball.direction = WEST;
+                ball.new_row = new_row;
+                break;
+            case SOUTH_EAST:
+                ball.direction = NORTH_WEST;
+                ball.new_row = new_row - 1;
+                break;
+            case NORTH_EAST:
+                ball.direction = SOUTH_WEST;
+                ball.new_row = new_row + 1;
+                break;
+            default:
+                break;
         }
 
         ball.old_row = STARTING_OLD;
