@@ -63,7 +63,7 @@ void text_init(void)
 void show_initial_text(void)
 {
     bool start_game = false;
-    tinygl_text("PONG");
+    tinygl_text("PRESS THE NAVSWITCH ONCE THE BOARDS ARE ALIGNED TO PLAY.");
     while (!start_game) {
         pacer_wait();
         tinygl_update();
