@@ -14,6 +14,7 @@
 
 #include "board.h"
 #include "display.h"
+#include "ir_uart.h"
 #include "puck.h"
 
 bool have_ball = false;
@@ -23,6 +24,56 @@ bool have_ball = false;
  *
  */
 static Ball ball;
+
+void ball_transmit(void)
+{
+    // subtract a value from ball.velocity to ensure that it can fit inside 8 bits
+    int8_t ball_values = (ball.new_row) | ((ball.velocity - 1) << 3) | direction;
+    ir_uart_putc(ball_values);
+    ball.old_row = ball.new_row;
+    ball.old_column = ball.new_column;
+    ball.new_row = -1; // completely removes the ball from the board
+    ball.new_column = -1;
+    ball.direction = 0; // undefined direction
+    ball.velocity = 4;
+}
+
+int8_t get_direction(int8_t ball_values)
+{
+    int8_t direction = ball_values;
+    for (int8_t i = 3; i < 8; i++) {
+        direction &= ~(1 << i);
+    }
+    return direction;
+}
+
+int8_t get_velocity(int8_t ball_values)
+{
+    int8_t velocity = ball_values >> 3;
+    for (int8_t i = 2; i < 8; i++) {
+        velocity &= ~(1 << i); // wipes the bits
+    }
+    velocity += 1;
+    return velocity;
+}
+
+void ball_receive(void)
+{
+    if (ir_uart_read_ready_p()) {
+        ball_values = ir_uart_getc();
+
+        ball.new_row = ball_values >> 5;
+        ball.velocity = get_velocity(ball_values);
+        ball.direction = get_direction(ball_values);
+    }
+}
+
+void handle_ball_transmission(void)
+{
+    if (ball.new_column == -1) {
+        ball_transmit();
+    }
+}
 
 /**
  * @brief Updates the ball in the board/display.
@@ -191,6 +242,7 @@ void ball_update_value(void)
 
     handle_ball_puck_collision();
     handle_ball_wall_collision();
+    handle_ball_transmission();
 
     ball_update_display();
 }
@@ -201,13 +253,22 @@ void ball_update_value(void)
  */
 void ball_init(void)
 {
-    Ball new_ball = {.old_row = STARTING_OLD,
-                     .old_column = STARTING_OLD,
-                     .new_row = STARTING_ROW,
-                     .new_column = STARTING_COLUMN,
-                     .velocity = STARTING_VELOCITY,
-                     .direction = STARTING_DIRECTION};
-    ball = new_ball;
+    if (have_ball) {
+        Ball new_ball = {.old_row = STARTING_OLD,
+                         .old_column = STARTING_OLD,
+                         .new_row = STARTING_ROW,
+                         .new_column = STARTING_COLUMN,
+                         .velocity = STARTING_VELOCITY,
+                         .direction = STARTING_DIRECTION};
+        ball = new_ball;
+    } else {
+        Ball new_ball = {.old_row = STARTING_OLD,
+                         .old_column = STARTING_OLD,
+                         .new_row = -1,
+                         .new_column = -1,
+                         .velocity = 0,
+                         .direction = 4};
+    }
 
     ball_update_display();
 }
@@ -248,6 +309,9 @@ void ball_task(__unused__ void* data)
     uint8_t variable_period = VARIABLE_PERIOD_NUMERATOR / ball.velocity;
     for (uint8_t i = 0; i < ball.velocity; i++) {
         if (can_update(time_to_check)) {
+            if (ball.new_column == -1 && ball.new_row == -1) {
+                ball_receive();
+            }
             ball_update_value();
             counter++;
             return;
