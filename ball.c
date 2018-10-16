@@ -57,6 +57,29 @@ int8_t get_velocity(int8_t ball_values)
 int8_t get_new_row(int8_t ball_values)
 {
     int8_t new_row = (ball_values >> 5);
+    switch (new_row) {
+        case 0:
+            return 6;
+            break;
+        case 1:
+            return 5;
+            break;
+        case 2:
+            return 4;
+            break;
+        case 3:
+            return 3;
+            break;
+        case -4:
+            return 2;
+            break;
+        case -3:
+            return 1;
+            break;
+        case -2:
+            return 0;
+            break;
+    }
     return new_row;
 }
 
@@ -74,24 +97,28 @@ void ball_receive(void)
         if (new_row == 1 && direction == NORTH_EAST) {
             ball.new_row = 6;
             ball.direction = SOUTH_WEST;
-        } else if (new_row < 0 && direction == SOUTH_EAST) {
+        } else if (new_row == -2 && direction == SOUTH_EAST) {
+            // value is -2, but that doesn't seem to work
             // } else if (new_row == 6 && direction == SOUTH_EAST) {
-            ball.new_row = new_row;
+            ball.new_row = 0;
             ball.direction = NORTH_WEST;
         } else {
             switch (direction) {
                 case EAST:
                     ball.direction = WEST;
+                    ball.new_row = new_row;
                     break;
                 case SOUTH_EAST:
                     ball.direction = NORTH_WEST;
+                    ball.new_row = new_row - 1;
                     break;
                 case NORTH_EAST:
                     ball.direction = SOUTH_WEST;
+                    ball.new_row = new_row + 1;
+                    break;
                 default:
                     break;
             }
-            ball.new_row = 6 - new_row;
         }
 
         ball.old_row = STARTING_OLD;
@@ -313,7 +340,8 @@ void ball_init(void)
                          .old_column = STARTING_OLD,
                          .new_row = STARTING_ROW,
                          .new_column = STARTING_COLUMN,
-                         .velocity = STARTING_VELOCITY,
+                         .velocity = 1,
+                         //  .velocity = STARTING_VELOCITY,
                          .direction = STARTING_DIRECTION};
         ball = new_ball;
         ball_update_display();
