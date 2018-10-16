@@ -45,10 +45,10 @@ int8_t get_direction(int8_t ball_values)
             direction = WEST;
             break;
         case NORTH_EAST:
-            direction = SOUTH_WEST;
+            direction = NORTH_WEST;
             break;
         case SOUTH_EAST:
-            direction = NORTH_WEST;
+            direction = SOUTH_WEST;
             break;
         default:
             // the received directions should always be *WEST, which is *EAST on the current board
@@ -67,12 +67,18 @@ int8_t get_velocity(int8_t ball_values)
     return velocity;
 }
 
+int8_t get_new_row(int8_t ball_values)
+{
+    int8_t new_row = 6 - (ball_values >> 5);
+    return new_row;
+}
+
 void ball_receive(void)
 {
     if (ir_uart_read_ready_p()) {
         int8_t ball_values = ir_uart_getc();
 
-        ball.new_row = ball_values >> 5;
+        ball.new_row = get_new_row(ball_values);
         ball.velocity = get_velocity(ball_values);
         ball.direction = get_direction(ball_values);
 
