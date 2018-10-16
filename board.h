@@ -34,6 +34,8 @@ void text_init(void);
 
 void show_initial_text(void);
 
+void notify(void);
+
 void board_init(void);
 
 void board_task(__unused__ void* data);

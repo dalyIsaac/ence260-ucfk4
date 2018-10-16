@@ -75,6 +75,22 @@ void show_initial_text(void)
     }
 }
 
+void notify(void)
+{
+    bool stop_game = false;
+    tinygl_text(lost_game ? "LOST" : "WON");
+    while (!stop_game) {
+        pacer_wait();
+        tinygl_update();
+
+        navswitch_update();
+        if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
+            stop_game = true;
+        }
+    }
+    display_init();
+}
+
 /**
  * @brief Initialises the display/board
  */
