@@ -132,6 +132,8 @@ ImpactPoint get_impact_point(void)
             return IMPACT_BOTTOM;
         } else if (ball.new_row == puck.new_top) {
             return IMPACT_TOP;
+        } else if (puck.new_bottom <= ball.new_row && ball.new_row <= puck.new_top) {
+            return IMPACT_MIDDLE;
         }
     } else if (ball.direction == SOUTH_WEST || ball.direction == NORTH_WEST) {
         if (ball.old_row == puck.new_top) {
@@ -163,8 +165,8 @@ void handle_ball_puck_collision_west(void)
             ball.direction = SOUTH_EAST;
             ball.new_row--;
         } else if (impact == NO_IMPACT) {
-            ball.new_row = ball.old_row;
-            ball.new_column = 4;
+            ball.new_row = 0;
+            ball.new_column = 0;
             ball.direction = WEST;
             lost_game = true;
         }
