@@ -272,17 +272,16 @@ void ball_init(void)
                          //  .velocity = STARTING_VELOCITY,
                          .direction = STARTING_DIRECTION};
         ball = new_ball;
+        ball_update_display();
     } else {
         Ball new_ball = {.old_row = STARTING_OLD,
                          .old_column = STARTING_OLD,
                          .new_row = -1,
                          .new_column = -1,
-                         .velocity = 0,
+                         .velocity = 1,
                          .direction = 4};
         ball = new_ball;
     }
-
-    ball_update_display();
 }
 
 /**
