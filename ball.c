@@ -19,6 +19,8 @@
 
 bool have_ball = false;
 
+bool lost_game = false;
+
 /**
  * @brief Ball for the game
  *
@@ -72,8 +74,9 @@ void ball_receive(void)
         if (new_row == 1 && direction == NORTH_EAST) {
             ball.new_row = 6;
             ball.direction = SOUTH_WEST;
-        } else if (new_row == 5 && direction == SOUTH_EAST) {
-            ball.new_row = 0;
+        } else if (new_row < 0 && direction == SOUTH_EAST) {
+            // } else if (new_row == 6 && direction == SOUTH_EAST) {
+            ball.new_row = new_row;
             ball.direction = NORTH_WEST;
         } else {
             switch (direction) {
@@ -130,16 +133,16 @@ ImpactPoint get_impact_point(void)
         } else if (ball.new_row == puck.new_top) {
             return IMPACT_TOP;
         }
-        return IMPACT_MIDDLE;
     } else if (ball.direction == SOUTH_WEST || ball.direction == NORTH_WEST) {
         if (ball.old_row == puck.new_top) {
             return IMPACT_TOP;
         } else if (ball.old_row == puck.new_bottom) {
             return IMPACT_BOTTOM;
+        } else if (puck.new_bottom <= ball.new_row && ball.new_row <= puck.new_top) {
+            return IMPACT_MIDDLE;
         }
-        return IMPACT_MIDDLE;
     }
-    return IMPACT_MIDDLE; // this should never be reached
+    return NO_IMPACT;
 }
 
 /**
@@ -159,6 +162,11 @@ void handle_ball_puck_collision_west(void)
         } else if (impact == IMPACT_BOTTOM) {
             ball.direction = SOUTH_EAST;
             ball.new_row--;
+        } else if (impact == NO_IMPACT) {
+            ball.new_row = ball.old_row;
+            ball.new_column = 4;
+            ball.direction = WEST;
+            lost_game = true;
         }
     }
 }
@@ -180,6 +188,11 @@ void handle_ball_puck_collision_south_west(void)
         } else if (impact == IMPACT_BOTTOM) {
             ball.direction = SOUTH_EAST;
             ball.velocity += 2;
+        } else if (impact == NO_IMPACT) {
+            ball.new_row = ball.old_row - 1;
+            ball.new_column = 4;
+            ball.direction = WEST;
+            lost_game = true;
         }
     }
 }
@@ -201,6 +214,11 @@ void handle_ball_puck_collision_north_west(void)
         } else if (impact == IMPACT_BOTTOM) {
             ball.direction = NORTH_EAST;
             ball.velocity++;
+        } else if (impact == NO_IMPACT) {
+            ball.new_row = ball.old_row + 1;
+            ball.new_column = 4;
+            ball.direction = WEST;
+            lost_game = true;
         }
     }
 }
