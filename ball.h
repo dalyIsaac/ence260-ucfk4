@@ -81,6 +81,10 @@ typedef enum impact_point_e {
 
 bool have_ball;
 
+bool continue_game;
+
+bool lost_game;
+
 void ball_update_value(void);
 
 void ball_init(void);

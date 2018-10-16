@@ -21,11 +21,21 @@ bool have_ball = false;
 
 bool lost_game = false;
 
+bool continue_game = true;
+
 /**
  * @brief Ball for the game
  *
  */
 static Ball ball;
+
+void transmit_lost(void)
+{
+    lost_game = true;
+    continue_game = false;
+    int8_t transmit_value = 255 << 0;
+    ir_uart_putc(transmit_value);
+}
 
 void ball_transmit(void)
 {
@@ -149,7 +159,7 @@ ImpactPoint get_impact_point(void)
             return IMPACT_BOTTOM;
         } else if (ball.new_row == puck.new_top) {
             return IMPACT_TOP;
-        } else if (puck.new_bottom <= ball.new_row && ball.new_row <= puck.new_top) {
+        } else if (puck.new_bottom < ball.new_row && ball.new_row < puck.new_top) {
             return IMPACT_MIDDLE;
         }
     } else if (ball.direction == SOUTH_WEST || ball.direction == NORTH_WEST) {
@@ -185,7 +195,6 @@ void handle_ball_puck_collision_west(void)
             ball.new_row = 0;
             ball.new_column = 0;
             ball.direction = WEST;
-            lost_game = true;
         }
     }
 }
@@ -211,7 +220,6 @@ void handle_ball_puck_collision_south_west(void)
             ball.new_row = ball.old_row - 1;
             ball.new_column = 4;
             ball.direction = WEST;
-            lost_game = true;
         }
     }
 }
@@ -237,7 +245,6 @@ void handle_ball_puck_collision_north_west(void)
             ball.new_row = ball.old_row + 1;
             ball.new_column = 4;
             ball.direction = WEST;
-            lost_game = true;
         }
     }
 }
@@ -313,14 +320,18 @@ void ball_update_value(void)
     }
 
     handle_ball_puck_collision();
-    handle_ball_wall_collision();
-    handle_ball_transmission();
+    if (ball.new_column == 4) {
+        transmit_lost();
+    } else {
+        handle_ball_wall_collision();
+        handle_ball_transmission();
 
-    if (ball.velocity > 4) {
-        ball.velocity = 4;
+        if (ball.velocity > 4) {
+            ball.velocity = 4;
+        }
+
+        ball_update_display();
     }
-
-    ball_update_display();
 }
 
 /**
