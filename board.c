@@ -75,17 +75,23 @@ void show_initial_text(void)
     }
 }
 
+bool play_another_game = true;
+
 void notify(void)
 {
-    bool stop_game = false;
-    tinygl_text(lost_game ? "LOST" : "WON");
-    while (!stop_game) {
+    if (lost_game) {
+        tinygl_text("LOST. PRESS NAVSWITCH DOWN TO PLAY AGAIN. PRESS RESET BUTTON TO END GAME.");
+    } else {
+        tinygl_text("WON. PRESS NAVSWITCH DOWN TO PLAY AGAIN. PRESS RESET BUTTON TO END GAME.");
+    }
+    play_another_game = false;
+    while (!play_another_game) {
         pacer_wait();
         tinygl_update();
 
         navswitch_update();
         if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
-            stop_game = true;
+            play_another_game = true;
         }
     }
     display_init();

@@ -28,6 +28,8 @@
  */
 #define TOP_ROW LEDMAT_ROWS_NUM - 1
 
+bool play_another_game;
+
 void negotiate_first_player(void);
 
 void text_init(void);

@@ -98,13 +98,15 @@ int main(void)
     text_init();
     show_initial_text();
 
-    negotiate_first_player();
+    while (play_another_game) {
+        negotiate_first_player();
 
-    board_init();
-    puck_init();
-    ball_init();
+        board_init();
+        puck_init();
+        ball_init();
 
-    custom_task_schedule(tasks, ARRAY_SIZE(tasks));
+        custom_task_schedule(tasks, ARRAY_SIZE(tasks));
 
-    notify();
+        notify();
+    }
 }
