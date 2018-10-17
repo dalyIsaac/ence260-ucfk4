@@ -4,7 +4,7 @@
  * @author Divyean Sivarman (dsi3@uclive.ac.nz)
  * @brief Main module for the game
  * @version 1.0
- * @date 2018-10-17
+ * @date 2018-10-18
  *
  * @copyright Copyright (c) 2018
  *
@@ -20,8 +20,22 @@
 #include "system.h"
 #include "task.h"
 
+/**
+ * @brief The rate at which the board's display updates.
+ *
+ */
 #define BOARD_DISPLAY_TASK_RATE 250
+
+/**
+ * @brief The rate at which the puck's task runs.
+ *
+ */
 #define PUCK_TASK_RATE 100
+
+/**
+ * @brief The rate at which the ball's task runs.
+ *
+ */
 #define BALL_TASK_RATE 100
 
 /**
@@ -41,6 +55,8 @@ int main(void)
     text_init();
     show_initial_text();
 
+    // To exit the application, the user presses the reset button, which kills the program by
+    // itself. Thus, an infinite loop is justified.
     while (1) {
         negotiate_first_player();
 
