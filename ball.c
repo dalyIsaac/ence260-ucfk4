@@ -19,18 +19,36 @@
 #include "ir_uart.h"
 #include "puck.h"
 
+/**
+ * @brief Indicates whether this board has the ball.
+ *
+ */
 bool have_ball = false;
 
+/**
+ * @brief Indicates whether this game has lost the game. This is checked prior to notifying the
+ * player of the result.
+ *
+ */
 bool lost_game = false;
 
+/**
+ * @brief Used to indicate to the custom task scheduler whether the game is still continuing.
+ *
+ */
 bool continue_game = true;
 
 /**
- * @brief Ball for the game
+ * @brief The ball for the game. It only holds the ball's attributes when this board has the ball.
  *
  */
 static Ball ball;
 
+/**
+ * @brief Transmits to the other board that this board has lost the game. Also tells the custom task
+ * scheduler to stop the execution of the game.
+ *
+ */
 void transmit_lost(void)
 {
     lost_game = true;
@@ -39,6 +57,10 @@ void transmit_lost(void)
     ir_uart_putc(ball_values);
 }
 
+/**
+ * @brief Transmits the ball to the other board.
+ *
+ */
 void ball_transmit(void)
 {
     // subtract a value from ball.velocity to ensure that it can fit inside 8 bits
@@ -47,6 +69,12 @@ void ball_transmit(void)
     have_ball = false;
 }
 
+/**
+ * @brief Gets the direction of the ball from the received transmission.
+ *
+ * @param ball_values The received transmission
+ * @return int8_t The received direction
+ */
 int8_t get_direction(int8_t ball_values)
 {
     int8_t direction = ball_values;
@@ -56,6 +84,12 @@ int8_t get_direction(int8_t ball_values)
     return direction;
 }
 
+/**
+ * @brief Gets the velocity of the ball from the received transmission.
+ *
+ * @param ball_values The received transmission
+ * @return int8_t The received velocity
+ */
 int8_t get_velocity(int8_t ball_values)
 {
     int8_t velocity = ball_values >> 3;
@@ -66,9 +100,17 @@ int8_t get_velocity(int8_t ball_values)
     return velocity;
 }
 
+/**
+ * @brief Gets the new_row of the ball from the received transmission. Currently does some funky
+ * things to handle a mix-up between signed and unsigned integers.
+ *
+ * @param ball_values The received transmission
+ * @return int8_t The received new_row
+ */
 int8_t get_new_row(int8_t ball_values)
 {
     int8_t new_row = (ball_values >> 5);
+    // handles a mix-up between signed and unsigned integers
     switch (new_row) {
         case 0:
             return 6;
@@ -95,6 +137,10 @@ int8_t get_new_row(int8_t ball_values)
     return new_row;
 }
 
+/**
+ * @brief Receives the ball from the other board, if it is available.
+ *
+ */
 void ball_receive(void)
 {
     if (ir_uart_read_ready_p()) {
@@ -106,6 +152,7 @@ void ball_receive(void)
 
         ball.velocity = velocity;
 
+        // figures out the direction and new_row for this board
         switch (direction) {
             case EAST:
                 ball.direction = WEST;
@@ -125,7 +172,7 @@ void ball_receive(void)
 
         ball.old_row = STARTING_OLD;
         ball.old_column = STARTING_OLD;
-        ball.new_column = -1;
+        ball.new_column = -1; // all balls start in this column
 
         have_ball = true;
 
@@ -146,6 +193,10 @@ void ball_update_display(void)
     }
 }
 
+/**
+ * @brief Checks if the board should transmit the ball's position. If so, it calls ball_transmit.
+ *
+ */
 void handle_ball_transmission(void)
 {
     if (have_ball && ball.new_column == -1) {
@@ -156,6 +207,7 @@ void handle_ball_transmission(void)
 /**
  * @brief Gets the impact point between the puck and the ball, when the ball is travelling west
  * Assumes that pucks are three points long.
+ *
  * @return ImpactPoint The impact point
  */
 ImpactPoint get_impact_point(void)
@@ -181,7 +233,8 @@ ImpactPoint get_impact_point(void)
 }
 
 /**
- * @brief Handles collisions where the ball's direction is WEST
+ * @brief Handles collisions where the ball's direction is WEST.
+ *
  */
 void handle_ball_puck_collision_west(void)
 {
@@ -206,7 +259,8 @@ void handle_ball_puck_collision_west(void)
 }
 
 /**
- * @brief Handles collisions where the ball's direction is SOUTH_WEST
+ * @brief Handles collisions where the ball's direction is SOUTH_WEST.
+ *
  */
 void handle_ball_puck_collision_south_west(void)
 {
@@ -231,7 +285,8 @@ void handle_ball_puck_collision_south_west(void)
 }
 
 /**
- * @brief Handles collisions where the ball's direction is SOUTH_WEST
+ * @brief Handles collisions where the ball's direction is SOUTH_WEST.
+ *
  */
 void handle_ball_puck_collision_north_west(void)
 {
@@ -257,7 +312,8 @@ void handle_ball_puck_collision_north_west(void)
 
 /**
  * @brief Checks to see if the proposed location for the ball is currently
- * occupied by the puck
+ * occupied by the puck.
+ *
  * @return true The ball is in the puck
  * @return false The ball is not in the puck
  */
@@ -274,6 +330,7 @@ void handle_ball_puck_collision(void)
 
 /**
  * @brief Updates the ball with the new column.
+ *
  */
 void set_ball_column_movement(void)
 {
@@ -288,6 +345,7 @@ void set_ball_column_movement(void)
 
 /**
  * @brief If the ball collides with the wall, its row and direction are updated.
+ *
  */
 void handle_ball_wall_collision(void)
 {
@@ -310,7 +368,8 @@ void handle_ball_wall_collision(void)
 
 /**
  * @brief Updates the ball's location, based on its attributes and location
- * within the board
+ * within the board.
+ *
  */
 void ball_update_value(void)
 {
@@ -342,7 +401,8 @@ void ball_update_value(void)
 
 /**
  * @brief Creates a ball, and adds it to the board.
- * CAN ONLY BE USED AFTER board_init()
+ * CAN ONLY BE USED AFTER board_init().
+ *
  */
 void ball_init(void)
 {
@@ -367,16 +427,19 @@ void ball_init(void)
 }
 
 /**
- * @brief Counter which is used for the timer.
+ * @brief The counter which is used to determine how often the ball's position should update, based
+ * on the velocity.
+ *
  */
 static uint16_t counter;
 
 /**
  * @brief Checks whether the time_to_check matches the current time, and thus whether the ball
  * can update.
+ *
  * @param time_to_check Time to check. Should between 0 and 99, inclusive.
- * @return true
- * @return false
+ * @return true The ball's value can be updated now.
+ * @return false The ball's value cannot be updated now.
  */
 bool can_update(uint8_t time_to_check)
 {
@@ -394,6 +457,7 @@ bool can_update(uint8_t time_to_check)
  * If the velocity is 2, it updates when value is 99, 49.
  * If the velocity is 3, it updates when value is 99, 66, 33.
  * ...
+ *
  * @param void
  */
 void ball_task(__unused__ void* data)
