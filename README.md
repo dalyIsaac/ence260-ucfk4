@@ -22,9 +22,9 @@ make
 make program
 ```
 
-Once both boards have the game loaded and are showing the welcome text, **press the navswitch down**.
+Once both boards have the game loaded and are showing the welcome text, **press the _navswitch_ down**.
 
-To move the puck (paddle), use the **tilt the _navswitch_ to the left and right** (assuming that the board is oriented such that the USB port is on the right).
+To move the puck/paddle, use the **tilt the _navswitch_ to the left and right** (assuming that the board is oriented such that the USB port is on the right).
 
 Once the game is ended, the boards will notify each player if they won or lost.
 
