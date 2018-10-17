@@ -10,8 +10,6 @@
  *
  */
 
-#include "game.h"
-
 #include "ball.h"
 #include "board.h"
 #include "ir_uart.h"
@@ -20,6 +18,10 @@
 #include "puck.h"
 #include "system.h"
 #include "task.h"
+
+#define BOARD_DISPLAY_TASK_RATE 250
+#define PUCK_TASK_RATE 100
+#define BALL_TASK_RATE 100
 
 /** With 16-bit times the maximum value is 32768.  */
 #define TASK_OVERRUN_MAX 32767
