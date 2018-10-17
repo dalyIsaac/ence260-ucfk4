@@ -1,9 +1,10 @@
 /**
  * @file puck.c
  * @author Isaac Daly (idd17@uclive.ac.nz)
+ * @author Divyean Sivarman (dsi3@uclive.ac.nz)
  * @brief Contains definitions for the puck
- * @version 0.2
- * @date 2018-10-10
+ * @version 1.0
+ * @date 2018-10-17
  *
  * @copyright Copyright (c) 2018
  *
@@ -21,7 +22,8 @@ Puck puck;
 
 /**
  * @brief Updates the puck in the board/display.
- * CAN ONLY BE USED AFTER board_init()
+ * CAN ONLY BE USED AFTER board_init().
+ *
  */
 void puck_update_display(void)
 {
@@ -38,7 +40,8 @@ void puck_update_display(void)
 
 /**
  * @brief Creates a puck, and adds it to the board.
- * CAN ONLY BE USED AFTER board_init()
+ * CAN ONLY BE USED AFTER board_init().
+ *
  */
 void puck_init(void)
 {
@@ -51,7 +54,8 @@ void puck_init(void)
 }
 
 /**
- * @brief Updates the value of a puck, following user input with the navswitch
+ * @brief Updates the value of a puck, following user input with the navswitch.
+ *
  * @param change The change to the puck's position
  */
 void puck_update_value(NavMovement change)
@@ -67,7 +71,8 @@ void puck_update_value(NavMovement change)
 }
 
 /**
- * @brief Updates the puck's position based on the user's interaction with the navswitch
+ * @brief Updates the puck's position based on the user's interaction with the navswitch.
+ *
  */
 void puck_task(__unused__ void* data)
 {
