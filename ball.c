@@ -360,7 +360,7 @@ void ball_init(void)
                          .old_column = STARTING_OLD,
                          .new_row = -1,
                          .new_column = -1,
-                         .velocity = 1,
+                         .velocity = 4,
                          .direction = STARTING_OLD};
         ball = new_ball;
     }
