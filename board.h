@@ -16,8 +16,22 @@
 
 #include "system.h"
 
+/**
+ * @brief The rate at which the message moves.
+ *
+ */
 #define MESSAGE_RATE 10
+
+/**
+ * @brief The rate at which the pacer refreshes.
+ *
+ */
 #define PACER_RATE 500
+
+/**
+ * @brief The rate at which tinygl loops.
+ *
+ */
 #define LOOP_RATE PACER_RATE
 
 /**
