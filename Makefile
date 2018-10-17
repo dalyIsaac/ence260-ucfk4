@@ -1,9 +1,9 @@
 # File:   Makefile
 # Author: Isaac Daly (idd17@uclive.ac.nz)
 # Author: Divyean Sivarman (dsi3@uclive.ac.nz)
-# Date:   2018-10-16
+# Date:   2018-10-18
 # Descr:  Makefile for game
-# Version: 0.3
+# Version: 1.0
 
 # Definitions.
 CC = avr-gcc

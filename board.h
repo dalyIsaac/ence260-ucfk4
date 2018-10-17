@@ -4,12 +4,13 @@
  * @author Divyean Sivarman (dsi3@uclive.ac.nz)
  * @brief Contains the board/display's function declarations and macro definitions which are to
  * be shared with other files.
- * @version 0.3
- * @date 2018-10-16
+ * @version 1.0
+ * @date 2018-10-17
  *
  * @copyright Copyright (c) 2018
  *
  */
+
 #ifndef BOARD_H
 #define BOARD_H
 #include "system.h"

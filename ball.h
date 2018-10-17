@@ -1,3 +1,17 @@
+/**
+ * @file ball.c
+ * @author Isaac Daly (idd17@uclive.ac.nz)
+ * @author Divyean Sivarman (dsi3@uclive.ac.nz)
+ * @brief Contains header definitions for the ball module.
+ * @version 1.0
+ * @date 2018-10-17
+ *
+ * @copyright Copyright (c) 2018
+ *
+ * @note The bottom of the board is the side closest to the USB port. The south
+ * side is the bottom side of the board.
+ */
+
 #ifndef BALL_H
 #define BALL_H
 

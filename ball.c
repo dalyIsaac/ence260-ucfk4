@@ -1,15 +1,17 @@
 /**
  * @file ball.c
  * @author Isaac Daly (idd17@uclive.ac.nz)
+ * @author Divyean Sivarman (dsi3@uclive.ac.nz)
  * @brief Contains definitions for the ball
- * @version 0.2
- * @date 2018-10-10
+ * @version 1.0
+ * @date 2018-10-17
  *
  * @copyright Copyright (c) 2018
  *
  * @note The bottom of the board is the side closest to the USB port. The south
  * side is the bottom side of the board.
  */
+
 #include "ball.h"
 
 #include "board.h"

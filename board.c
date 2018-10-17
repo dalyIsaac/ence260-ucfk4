@@ -3,8 +3,8 @@
  * @author Isaac Daly (idd17@uclive.ac.nz)
  * @author Divyean Sivarman (dsi3@uclive.ac.nz)
  * @brief Contains definitions for the board/display, and the initial text
- * @version 0.3
- * @date 2018-10-16
+ * @version 1.0
+ * @date 2018-10-17
  *
  * @copyright Copyright (c) 2018
  *
