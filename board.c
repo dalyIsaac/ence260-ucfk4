@@ -27,7 +27,7 @@
 void negotiate_first_player(void)
 {
     int8_t received_data = 0;
-    display_clear();
+    // display_clear();
 
     pacer_wait();
     if (ir_uart_read_ready_p()) { // receives data first, so is player 2
