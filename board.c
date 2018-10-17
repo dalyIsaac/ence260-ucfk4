@@ -99,6 +99,8 @@ void notify(void)
  */
 void board_init(void)
 {
+    lost_game = false;
+    continue_game = true;
     display_init();
 }
 
