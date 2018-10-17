@@ -45,22 +45,20 @@ static void puck_update_display(void)
 static void puck_update_value(NavMovement change)
 {
     if (puck.new_bottom + change >= BOTTOM_ROW && puck.new_top + change < LEDMAT_ROWS_NUM) {
-        Puck new_puck = {.old_bottom = puck.new_bottom,
-                         .old_top = puck.new_top,
-                         .new_bottom = puck.new_bottom + change,
-                         .new_top = puck.new_top + change};
-        puck = new_puck;
+        puck = (Puck){.old_bottom = puck.new_bottom,
+                      .old_top = puck.new_top,
+                      .new_bottom = puck.new_bottom + change,
+                      .new_top = puck.new_top + change};
         puck_update_display();
     }
 }
 
 void puck_init(void)
 {
-    Puck new_puck = {.old_top = STARTING_OLD,
-                     .old_bottom = STARTING_OLD,
-                     .new_top = STARTING_TOP,
-                     .new_bottom = STARTING_BOTTOM};
-    puck = new_puck;
+    puck = (Puck){.old_top = STARTING_OLD,
+                  .old_bottom = STARTING_OLD,
+                  .new_top = STARTING_TOP,
+                  .new_bottom = STARTING_BOTTOM};
     puck_update_display();
 }
 
