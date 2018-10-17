@@ -4,7 +4,7 @@
  * @author Divyean Sivarman (dsi3@uclive.ac.nz)
  * @brief Contains definitions for the ball
  * @version 1.0
- * @date 2018-10-17
+ * @date 2018-10-18
  *
  * @copyright Copyright (c) 2018
  *
