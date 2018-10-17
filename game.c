@@ -19,6 +19,7 @@
 #include "puck.h"
 #include "system.h"
 #include "task.h"
+#include "text.h"
 
 /**
  * @brief The rate at which the board's display updates.

@@ -17,24 +17,6 @@
 #include "system.h"
 
 /**
- * @brief The rate at which the message moves.
- *
- */
-#define MESSAGE_RATE 10
-
-/**
- * @brief The rate at which the pacer refreshes.
- *
- */
-#define PACER_RATE 500
-
-/**
- * @brief The rate at which tinygl loops.
- *
- */
-#define LOOP_RATE PACER_RATE
-
-/**
  * @brief The bottom row of the display
  */
 #define BOTTOM_ROW 0
@@ -49,24 +31,6 @@
  *
  */
 void negotiate_first_player(void);
-
-/**
- * @brief Initialises tinygl and the pacer.
- *
- */
-void text_init(void);
-
-/**
- * @brief Displays the initial text for the game. It exits when the user pushes the navswitch.
- *
- */
-void show_initial_text(void);
-
-/**
- * @brief Notifies the user whether they won, and how to restart the game.
- *
- */
-void notify(void);
 
 /**
  * @brief Initialises the display/board for a new game.
