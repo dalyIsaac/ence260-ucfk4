@@ -98,7 +98,7 @@ int main(void)
     text_init();
     show_initial_text();
 
-    while (play_another_game) {
+    while (1) {
         negotiate_first_player();
 
         board_init();

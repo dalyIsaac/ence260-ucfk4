@@ -75,8 +75,6 @@ void show_initial_text(void)
     }
 }
 
-bool play_another_game = true;
-
 void notify(void)
 {
     if (lost_game) {
@@ -84,14 +82,13 @@ void notify(void)
     } else {
         tinygl_text("WON. PRESS NAVSWITCH DOWN TO PLAY AGAIN. PRESS RESET BUTTON TO END GAME.");
     }
-    play_another_game = false;
-    while (!play_another_game) {
+    while (1) {
         pacer_wait();
         tinygl_update();
 
         navswitch_update();
         if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
-            play_another_game = true;
+            break;
         }
     }
     display_init();
