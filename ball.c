@@ -392,28 +392,6 @@ static void ball_update_value(void)
     }
 }
 
-void ball_init(void)
-{
-    if (have_ball) {
-        Ball new_ball = {.old_row = STARTING_OLD,
-                         .old_column = STARTING_OLD,
-                         .new_row = STARTING_ROW,
-                         .new_column = STARTING_COLUMN,
-                         .velocity = STARTING_VELOCITY,
-                         .direction = STARTING_DIRECTION};
-        ball = new_ball;
-        ball_update_display();
-    } else {
-        Ball new_ball = {.old_row = STARTING_OLD,
-                         .old_column = STARTING_OLD,
-                         .new_row = -1,
-                         .new_column = -1,
-                         .velocity = 4,
-                         .direction = STARTING_OLD};
-        ball = new_ball;
-    }
-}
-
 /**
  * @brief The counter which is used to determine how often the ball's position should update, based
  * on the velocity.
@@ -437,6 +415,28 @@ static bool can_update(uint8_t time_to_check)
         return true;
     }
     return false;
+}
+
+void ball_init(void)
+{
+    if (have_ball) {
+        Ball new_ball = {.old_row = STARTING_OLD,
+                         .old_column = STARTING_OLD,
+                         .new_row = STARTING_ROW,
+                         .new_column = STARTING_COLUMN,
+                         .velocity = STARTING_VELOCITY,
+                         .direction = STARTING_DIRECTION};
+        ball = new_ball;
+        ball_update_display();
+    } else {
+        Ball new_ball = {.old_row = STARTING_OLD,
+                         .old_column = STARTING_OLD,
+                         .new_row = -1,
+                         .new_column = -1,
+                         .velocity = 4,
+                         .direction = STARTING_OLD};
+        ball = new_ball;
+    }
 }
 
 void ball_task(__unused__ void* data)
