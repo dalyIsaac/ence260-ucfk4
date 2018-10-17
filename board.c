@@ -77,15 +77,18 @@ void show_initial_text(void)
 
 void notify(void)
 {
-    bool stop_game = false;
-    tinygl_text(lost_game ? "LOST" : "WON");
-    while (!stop_game) {
+    if (lost_game) {
+        tinygl_text("LOST. PRESS NAVSWITCH DOWN TO PLAY AGAIN. PRESS RESET BUTTON TO END GAME.");
+    } else {
+        tinygl_text("WON. PRESS NAVSWITCH DOWN TO PLAY AGAIN. PRESS RESET BUTTON TO END GAME.");
+    }
+    while (1) {
         pacer_wait();
         tinygl_update();
 
         navswitch_update();
         if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
-            stop_game = true;
+            break;
         }
     }
     display_init();
@@ -96,6 +99,8 @@ void notify(void)
  */
 void board_init(void)
 {
+    lost_game = false;
+    continue_game = true;
     display_init();
 }
 
