@@ -20,42 +20,50 @@
 
 /**
  * @brief Starting row for the ball.
+ *
  */
 #define STARTING_ROW 3
 
 /**
  * @brief Starting column for the ball.
+ *
  */
 #define STARTING_COLUMN 0
 
 /**
  * @brief Starting direction for the ball.
+ *
  */
 #define STARTING_DIRECTION WEST
 
 /**
  * @brief Starting velocity for the ball.
+ *
  *  */
 #define STARTING_VELOCITY 1
 
 /**
  * @brief The first value which is checked against to see if the ball can update.
+ *
  */
 #define FIRST_VALUE_FOR_UPDATE 99
 
 /**
  * @brief Used for determining the subtract_value, which in turn allows the ball to be updated
  * depending on its velocity.
+ *
  */
 #define VARIABLE_PERIOD_NUMERATOR 100
 
 /**
  * @brief Gets the timer, based on the continually incrementing counter.
+ *
  */
 #define GET_TIMER(counter) ((counter / 10) % 10) * 10 + counter % 10
 
 /**
  * @brief Specifies the values for the various directions.
+ *
  */
 typedef enum direction_e {
     NORTH_EAST = 0,
@@ -70,6 +78,7 @@ typedef enum direction_e {
  * @brief Definition for the Ball type. The old values are kept in order to wipe
  * them from the display, so that the new position can be written without
  * retaining the old position.
+ *
  */
 typedef struct ball_s
 {
@@ -85,6 +94,7 @@ typedef struct ball_s
 /**
  * @brief Definition for the ImpactPoint type. It indicates where on the puck
  * the ball impacted.
+ *
  */
 typedef enum impact_point_e {
     IMPACT_BOTTOM = 0,
@@ -93,16 +103,41 @@ typedef enum impact_point_e {
     NO_IMPACT = -1
 } ImpactPoint;
 
+/**
+ * @brief Indicates whether this board has the ball.
+ *
+ */
 bool have_ball;
 
-bool continue_game;
-
+/**
+ * @brief Indicates whether this game has lost the game. This is checked prior to notifying the
+ * player of the result.
+ *
+ */
 bool lost_game;
 
-void ball_update_value(void);
+/**
+ * @brief Used to indicate to the custom task scheduler whether the game is still continuing.
+ *
+ */
+bool continue_game;
 
+/**
+ * @brief Creates a ball, and adds it to the board.
+ * CAN ONLY BE USED AFTER board_init().
+ *
+ */
 void ball_init(void);
 
+/**
+ * @brief Updates the ball when it should.
+ * If the velocity is 1, it updates when value is 99.
+ * If the velocity is 2, it updates when value is 99, 49.
+ * If the velocity is 3, it updates when value is 99, 66, 33.
+ * ...
+ *
+ * @param void
+ */
 void ball_task(__unused__ void* data);
 
 #endif

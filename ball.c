@@ -10,6 +10,7 @@
  *
  * @note The bottom of the board is the side closest to the USB port. The south
  * side is the bottom side of the board.
+ * @note Comments for non-static functions and variables are inside the associated header file.
  */
 
 #include "ball.h"
@@ -19,23 +20,10 @@
 #include "ir_uart.h"
 #include "puck.h"
 
-/**
- * @brief Indicates whether this board has the ball.
- *
- */
 bool have_ball = false;
 
-/**
- * @brief Indicates whether this game has lost the game. This is checked prior to notifying the
- * player of the result.
- *
- */
 bool lost_game = false;
 
-/**
- * @brief Used to indicate to the custom task scheduler whether the game is still continuing.
- *
- */
 bool continue_game = true;
 
 /**
@@ -49,7 +37,7 @@ static Ball ball;
  * scheduler to stop the execution of the game.
  *
  */
-void transmit_lost(void)
+static void transmit_lost(void)
 {
     lost_game = true;
     continue_game = false;
@@ -61,10 +49,11 @@ void transmit_lost(void)
  * @brief Transmits the ball to the other board.
  *
  */
-void ball_transmit(void)
+static void ball_transmit(void)
 {
     // subtract a value from ball.velocity to ensure that it can fit inside 8 bits
-    int8_t ball_values = (ball.new_row << 5) | ((ball.velocity - 1) << 3) | ball.direction;// bit shifting for transmitting;
+    int8_t ball_values = (ball.new_row << 5) | ((ball.velocity - 1) << 3) |
+                         ball.direction; // bit shifting for transmitting;
     ir_uart_putc(ball_values);
     have_ball = false;
 }
@@ -75,7 +64,7 @@ void ball_transmit(void)
  * @param ball_values The received transmission
  * @return int8_t The received direction
  */
-int8_t get_direction(int8_t ball_values)
+static int8_t get_direction(int8_t ball_values)
 {
     int8_t direction = ball_values;
     // using bit shifting for last value of the trasmited integer
@@ -91,7 +80,7 @@ int8_t get_direction(int8_t ball_values)
  * @param ball_values The received transmission
  * @return int8_t The received velocity
  */
-int8_t get_velocity(int8_t ball_values)
+static int8_t get_velocity(int8_t ball_values)
 {
     int8_t velocity = ball_values >> 3;
     // using bit shifting for middle value of the trasmited integer
@@ -109,7 +98,7 @@ int8_t get_velocity(int8_t ball_values)
  * @param ball_values The received transmission
  * @return int8_t The received new_row
  */
-int8_t get_new_row(int8_t ball_values)
+static int8_t get_new_row(int8_t ball_values)
 {
     // using bit shifting for first three bit of the trasmited integer
     int8_t new_row = (ball_values >> 5);
@@ -145,7 +134,7 @@ int8_t get_new_row(int8_t ball_values)
  * @brief Receives the ball from the other board, if it is available.
  *
  */
-void ball_receive(void)
+static void ball_receive(void)
 {
     if (ir_uart_read_ready_p()) {
         int8_t ball_values = ir_uart_getc();
@@ -164,7 +153,7 @@ void ball_receive(void)
                 break;
             case SOUTH_EAST:
                 ball.direction = NORTH_WEST;
-                ball.new_row = new_row - 1;// this is to adh
+                ball.new_row = new_row - 1; // this is to adh
                 break;
             case NORTH_EAST:
                 ball.direction = SOUTH_WEST;
@@ -189,7 +178,7 @@ void ball_receive(void)
 /**
  * @brief Updates the ball in the board/display.
  */
-void ball_update_display(void)
+static void ball_update_display(void)
 {
     display_pixel_set(ball.old_column, ball.old_row, false);
     if (have_ball) {
@@ -201,7 +190,7 @@ void ball_update_display(void)
  * @brief Checks if the board should transmit the ball's position. If so, it calls ball_transmit.
  *
  */
-void handle_ball_transmission(void)
+static void handle_ball_transmission(void)
 {
     if (have_ball && ball.new_column == -1) {
         ball_transmit();
@@ -214,7 +203,7 @@ void handle_ball_transmission(void)
  *
  * @return ImpactPoint The impact point
  */
-ImpactPoint get_impact_point(void)
+static ImpactPoint get_impact_point(void)
 {
     if (ball.direction == WEST) {
         if (ball.new_row == puck.new_bottom) {
@@ -240,7 +229,7 @@ ImpactPoint get_impact_point(void)
  * @brief Handles collisions where the ball's direction is WEST.
  *
  */
-void handle_ball_puck_collision_west(void)
+static void handle_ball_puck_collision_west(void)
 {
     if (ball.new_column == PUCK_COL && puck.new_bottom <= ball.new_row &&
         ball.new_row <= puck.new_top) {
@@ -266,7 +255,7 @@ void handle_ball_puck_collision_west(void)
  * @brief Handles collisions where the ball's direction is SOUTH_WEST.
  *
  */
-void handle_ball_puck_collision_south_west(void)
+static void handle_ball_puck_collision_south_west(void)
 {
     if (ball.new_column == PUCK_COL) {
         ImpactPoint impact = get_impact_point();
@@ -292,7 +281,7 @@ void handle_ball_puck_collision_south_west(void)
  * @brief Handles collisions where the ball's direction is SOUTH_WEST.
  *
  */
-void handle_ball_puck_collision_north_west(void)
+static void handle_ball_puck_collision_north_west(void)
 {
     if (ball.new_column == PUCK_COL) {
         ImpactPoint impact = get_impact_point();
@@ -321,7 +310,7 @@ void handle_ball_puck_collision_north_west(void)
  * @return true The ball is in the puck
  * @return false The ball is not in the puck
  */
-void handle_ball_puck_collision(void)
+static void handle_ball_puck_collision(void)
 {
     if (ball.direction == WEST) {
         handle_ball_puck_collision_west();
@@ -336,7 +325,7 @@ void handle_ball_puck_collision(void)
  * @brief Updates the ball with the new column.
  *
  */
-void set_ball_column_movement(void)
+static void set_ball_column_movement(void)
 {
     if (NORTH_EAST <= ball.direction && ball.direction <= SOUTH_EAST) {
         // based on the direction compass. This includes NE, E, SE
@@ -351,7 +340,7 @@ void set_ball_column_movement(void)
  * @brief If the ball collides with the wall, its row and direction are updated.
  *
  */
-void handle_ball_wall_collision(void)
+static void handle_ball_wall_collision(void)
 {
     if (ball.new_row < BOTTOM_ROW) {
         ball.new_row = BOTTOM_ROW + 1;
@@ -375,7 +364,7 @@ void handle_ball_wall_collision(void)
  * within the board.
  *
  */
-void ball_update_value(void)
+static void ball_update_value(void)
 {
     ball.old_column = ball.new_column;
     ball.old_row = ball.new_row;
@@ -403,11 +392,6 @@ void ball_update_value(void)
     }
 }
 
-/**
- * @brief Creates a ball, and adds it to the board.
- * CAN ONLY BE USED AFTER board_init().
- *
- */
 void ball_init(void)
 {
     if (have_ball) {
@@ -445,7 +429,7 @@ static uint16_t counter;
  * @return true The ball's value can be updated now.
  * @return false The ball's value cannot be updated now.
  */
-bool can_update(uint8_t time_to_check)
+static bool can_update(uint8_t time_to_check)
 {
     uint8_t timer = GET_TIMER(counter);
 
@@ -455,15 +439,6 @@ bool can_update(uint8_t time_to_check)
     return false;
 }
 
-/**
- * @brief Updates the ball when it should.
- * If the velocity is 1, it updates when value is 99.
- * If the velocity is 2, it updates when value is 99, 49.
- * If the velocity is 3, it updates when value is 99, 66, 33.
- * ...
- *
- * @param void
- */
 void ball_task(__unused__ void* data)
 {
     uint8_t time_to_check = FIRST_VALUE_FOR_UPDATE;
