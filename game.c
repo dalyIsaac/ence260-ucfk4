@@ -39,7 +39,8 @@
 #define BALL_TASK_RATE 100
 
 /**
- * @brief Main function for the game
+ * @brief Main function for the game.
+ *
  * @return int
  */
 int main(void)
