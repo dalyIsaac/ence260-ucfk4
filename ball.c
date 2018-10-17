@@ -64,7 +64,7 @@ void transmit_lost(void)
 void ball_transmit(void)
 {
     // subtract a value from ball.velocity to ensure that it can fit inside 8 bits
-    int8_t ball_values = (ball.new_row << 5) | ((ball.velocity - 1) << 3) | ball.direction;
+    int8_t ball_values = (ball.new_row << 5) | ((ball.velocity - 1) << 3) | ball.direction;// bit shifting for transmitting;
     ir_uart_putc(ball_values);
     have_ball = false;
 }
@@ -78,6 +78,7 @@ void ball_transmit(void)
 int8_t get_direction(int8_t ball_values)
 {
     int8_t direction = ball_values;
+    // using bit shifting for last value of the trasmited integer
     for (int8_t i = 3; i < 8; i++) {
         direction &= ~(1 << i);
     }
@@ -93,6 +94,7 @@ int8_t get_direction(int8_t ball_values)
 int8_t get_velocity(int8_t ball_values)
 {
     int8_t velocity = ball_values >> 3;
+    // using bit shifting for middle value of the trasmited integer
     for (int8_t i = 2; i < 8; i++) {
         velocity &= ~(1 << i); // wipes the bits
     }
@@ -109,8 +111,10 @@ int8_t get_velocity(int8_t ball_values)
  */
 int8_t get_new_row(int8_t ball_values)
 {
+    // using bit shifting for first three bit of the trasmited integer
     int8_t new_row = (ball_values >> 5);
-    // handles a mix-up between signed and unsigned integers
+    // handles a mix-up between signed and unsigned integers.
+    // the code below is to make sure the right row get passed correctly.
     switch (new_row) {
         case 0:
             return 6;
@@ -160,7 +164,7 @@ void ball_receive(void)
                 break;
             case SOUTH_EAST:
                 ball.direction = NORTH_WEST;
-                ball.new_row = new_row - 1;
+                ball.new_row = new_row - 1;// this is to adh
                 break;
             case NORTH_EAST:
                 ball.direction = SOUTH_WEST;
