@@ -21,6 +21,9 @@ all: game.out
 game.o: game.c ../../drivers/avr/pio.h ../../drivers/avr/system.h  ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+customtaskschedule.o: customtaskschedule.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
 board.o: board.c ../../drivers/avr/pio.h ../../drivers/avr/system.h  
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -74,7 +77,7 @@ usart1.o: ../../drivers/avr/usart1.c ../../drivers/avr/system.h ../../drivers/av
 
 
 # Link: create ELF output file from object files.
-game.out: game.o board.o puck.o ball.o ledmat.o display.o pio.o system.o timer.o navswitch.o task.o tinygl.o font.o pacer.o usart1.o timer0.o prescale.o ir_uart.o
+game.out: game.o customtaskschedule.o board.o puck.o ball.o ledmat.o display.o pio.o system.o timer.o navswitch.o task.o tinygl.o font.o pacer.o usart1.o timer0.o prescale.o ir_uart.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
