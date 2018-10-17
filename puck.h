@@ -1,10 +1,11 @@
 /**
  * @file puck.h
  * @author Isaac Daly (idd17@uclive.ac.nz)
+ * @author Divyean Sivarman (dsi3@uclive.ac.nz)
  * @brief Contains the puck's function declarations and macro definitions which are to
  * be shared with other files.
- * @version 0.2
- * @date 2018-10-10
+ * @version 1.0
+ * @date 2018-10-18
  *
  * @copyright Copyright (c) 2018
  *
@@ -65,12 +66,23 @@ typedef struct puck_s
     int8_t new_top;
 } Puck;
 
+/**
+ * @brief The puck for this board.
+ *
+ */
 Puck puck;
 
+/**
+ * @brief Creates a puck, and adds it to the board.
+ * CAN ONLY BE USED AFTER board_init().
+ *
+ */
 void puck_init(void);
 
-void puck_update_value(NavMovement change);
-
+/**
+ * @brief Updates the puck's position based on the user's interaction with the navswitch.
+ *
+ */
 void puck_task(__unused__ void* data);
 
 #endif
