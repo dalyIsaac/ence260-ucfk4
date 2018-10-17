@@ -2,7 +2,9 @@
  * @file puck.c
  * @author Isaac Daly (idd17@uclive.ac.nz)
  * @author Divyean Sivarman (dsi3@uclive.ac.nz)
- * @brief Contains definitions for the puck
+ * @brief Contains definitions for the puck. The puck (also known as a paddle) is used to redirect
+ * the ball, in order to prevent the player from losing the game.
+ *
  * @version 1.0
  * @date 2018-10-18
  *
