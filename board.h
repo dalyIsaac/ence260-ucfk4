@@ -17,6 +17,18 @@
 #include "system.h"
 
 /**
+ * @brief Sent by the board which is "claiming" the role of player 1.
+ *
+ */
+#define I_AM_PLAYER_ONE 1
+
+/**
+ * @brief Sent by the board which is "claiming" the role of player 2.
+ *
+ */
+#define I_AM_PLAYER_TWO 2
+
+/**
  * @brief The bottom row of the display
  */
 #define BOTTOM_ROW 0

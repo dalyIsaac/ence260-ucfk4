@@ -26,13 +26,13 @@ void negotiate_first_player(void)
     pacer_wait();
     if (ir_uart_read_ready_p()) { // receives data first, so is player 2
         received_data = ir_uart_getc();
-        if (received_data == 2) {
-            ir_uart_putc(1);
+        if (received_data == I_AM_PLAYER_ONE) {
+            ir_uart_putc(I_AM_PLAYER_TWO);
             have_ball = false;
         }
     } else {
-        while (received_data != 1) { // sends data first, so is player 1
-            ir_uart_putc(2);
+        while (received_data != I_AM_PLAYER_TWO) { // sends data first, so is player 1
+            ir_uart_putc(I_AM_PLAYER_ONE);         // this board has "claimed" player 1
             pacer_wait();
             received_data = ir_uart_getc();
         }
