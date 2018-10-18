@@ -41,7 +41,7 @@ static Ball ball;
  * tells the custom task scheduler to stop the execution of the game.
  *
  */
-static void transmit_lost(void)
+static void lost_transmit(void)
 {
     lost_game = true;
     continue_game = false;
@@ -52,7 +52,7 @@ static void transmit_lost(void)
  * @brief Transmits the ball's current attributes to the other board.
  *
  */
-static void transmit_ball(void)
+static void ball_transmit(void)
 {
     int8_t ball_values = (ball.new_row << NEW_ROW_SHIFT) |
                          ((ball.velocity - 1) << VELOCITY_SHIFT) |
@@ -203,13 +203,13 @@ static void ball_update_display(void)
 
 /**
  * @brief Checks if the board should transmit the ball's position. If so, it
- * calls transmit_ball.
+ * calls ball_transmit.
  *
  */
 static void handle_ball_transmission(void)
 {
     if (have_ball && ball.new_column == TRANSMIT_COLUMN) {
-        transmit_ball();
+        ball_transmit();
     }
 }
 
@@ -405,7 +405,7 @@ static void ball_update_value(void)
     // with the puck. If the ball is in LAST_COLUMN at this point, the player
     // has lost this game.
     if (ball.new_column == LAST_COLUMN) {
-        transmit_lost();
+        lost_transmit();
     } else {
         handle_ball_wall_collision();
         handle_ball_transmission();
