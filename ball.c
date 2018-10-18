@@ -463,7 +463,7 @@ void ball_init(void)
                       .old_column = STARTING_OLD,
                       .new_row = BALL_RECEIVED_START,
                       .new_column = BALL_RECEIVED_START,
-                      .velocity = 4,
+                      .velocity = MAX_VELOCITY,
                       .direction = STARTING_OLD};
     }
 }
