@@ -20,14 +20,11 @@
 
 #include "board.h"
 #include "display.h"
+#include "game.h"
 #include "ir_uart.h"
 #include "puck.h"
 
 bool have_ball = false;
-
-bool lost_game = false;
-
-bool continue_game = true;
 
 /**
  * @brief The ball for the game. It only holds the ball's attributes when this

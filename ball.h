@@ -181,20 +181,6 @@ typedef enum impact_point_e {
 bool have_ball;
 
 /**
- * @brief Indicates whether this game has lost the game. This is checked prior
- * to notifying the player of the result.
- *
- */
-bool lost_game;
-
-/**
- * @brief Used to indicate to the custom task scheduler whether the game is
- * still continuing.
- *
- */
-bool continue_game;
-
-/**
  * @brief Creates a ball, and adds it to the board.
  * CAN ONLY BE USED AFTER board_init().
  *

@@ -8,7 +8,11 @@
  *
  * @copyright Copyright (c) 2018
  *
+ * @note Comments for non-static functions and variables are inside the
+ * associated header file.
  */
+
+#include "game.h"
 
 #include "ball.h"
 #include "board.h"
@@ -22,29 +26,15 @@
 #include "task.h"
 #include "text.h"
 
-/**
- * @brief The rate at which the board's display updates.
- *
- */
-#define BOARD_DISPLAY_TASK_RATE 250
+bool lost_game = false;
 
-/**
- * @brief The rate at which the puck's task runs.
- *
- */
-#define PUCK_TASK_RATE 100
-
-/**
- * @brief The rate at which the ball's task runs.
- *
- */
-#define BALL_TASK_RATE 100
+bool continue_game = true;
 
 /**
  * @brief Negotiates between the two boards who the first player is.
  *
  */
-void negotiate_first_player(void)
+static void negotiate_first_player(void)
 {
     int8_t received_data = 0;
 
