@@ -155,7 +155,7 @@ static bool check_won(int8_t received_data)
  * @note The received direction is for the old board. Since this board has a different orientation
  * to the board which transmitted the direction, the direction and the new_row need to be updated.
  */
-static void apply_received_ball_values(int8_t new_row, int8_t velocity, int8_t direction)
+static void set_received_ball_values(int8_t new_row, int8_t velocity, int8_t direction)
 {
     ball.old_column = STARTING_OLD;
     ball.old_row = STARTING_OLD;
@@ -195,7 +195,7 @@ static void ball_receive(void)
             int8_t new_row = get_new_row(received_data);
             int8_t velocity = get_velocity(received_data);
             int8_t direction = get_direction(received_data);
-            apply_received_ball_values(new_row, velocity, direction);
+            set_received_ball_values(new_row, velocity, direction);
             have_ball = true;
         }
     }
