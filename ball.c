@@ -146,11 +146,14 @@ static bool check_won(int8_t received_data)
 }
 
 /**
- * @brief Applys the received ball values so that they're correct for this board.
+ * @brief Applies the received ball values so that they're correct for this board.
  *
  * @param new_row The received new_row
  * @param velocity The received velocity
  * @param direction The received direction
+ *
+ * @note The received direction is for the old board. Since this board has a different orientation
+ * to the board which transmitted the direction, the direction and the new_row need to be updated.
  */
 static void apply_received_ball_values(int8_t new_row, int8_t velocity, int8_t direction)
 {
@@ -165,7 +168,7 @@ static void apply_received_ball_values(int8_t new_row, int8_t velocity, int8_t d
             ball.direction = WEST;
             break;
         case SOUTH_EAST:
-            ball.new_row = new_row - 1; // this is to adh
+            ball.new_row = new_row - 1;
             ball.direction = NORTH_WEST;
             break;
         case NORTH_EAST:
