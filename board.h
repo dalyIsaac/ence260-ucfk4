@@ -2,8 +2,8 @@
  * @file board.h
  * @author Isaac Daly (idd17@uclive.ac.nz)
  * @author Divyean Sivarman (dsi3@uclive.ac.nz)
- * @brief Contains the board/display's function declarations and macro definitions which are to
- * be shared with other files.
+ * @brief Contains the board/display's function declarations and macro
+ * definitions which are to be shared with other files.
  * @version 1.0
  * @date 2018-10-18
  *
@@ -37,12 +37,6 @@
  * @brief The top row of the display.
  */
 #define TOP_ROW LEDMAT_ROWS_NUM - 1
-
-/**
- * @brief Negotiates between the two boards who the first player is.
- *
- */
-void negotiate_first_player(void);
 
 /**
  * @brief Initialises the display/board for a new game.

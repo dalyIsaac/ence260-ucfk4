@@ -8,7 +8,8 @@
  *
  * @copyright Copyright (c) 2018
  *
- * @note Comments for non-static functions and variables are inside the associated header file.
+ * @note Comments for non-static functions and variables are inside the
+ * associated header file.
  *
  */
 
@@ -18,27 +19,6 @@
 #include "display.h"
 #include "ir_uart.h"
 #include "pacer.h"
-
-void negotiate_first_player(void)
-{
-    int8_t received_data = 0;
-
-    pacer_wait();
-    if (ir_uart_read_ready_p()) { // receives data first, so is player 2
-        received_data = ir_uart_getc();
-        if (received_data == I_AM_PLAYER_ONE) {
-            ir_uart_putc(I_AM_PLAYER_TWO);
-            have_ball = false;
-        }
-    } else {
-        while (received_data != I_AM_PLAYER_TWO) { // sends data first, so is player 1
-            ir_uart_putc(I_AM_PLAYER_ONE);         // this board has "claimed" player 1
-            pacer_wait();
-            received_data = ir_uart_getc();
-        }
-        have_ball = true;
-    }
-}
 
 void board_init(void)
 {
