@@ -135,14 +135,16 @@ static int8_t get_new_row(int8_t received_data)
  * @param received_data The data received from the other board
  * @return true The other board has indicated that it has lost the game, thus the game should not
  * continue.
- * @return false The other board has transmitted information about the ball.
+ * @return false The other board has transmitted information about the ball, and thus the game can
+ * continue.
  */
 static bool check_won(int8_t received_data)
 {
     if (received_data == I_HAVE_LOST) {
         continue_game = false;
+        return true;
     }
-    return continue_game;
+    return false;
 }
 
 /**
