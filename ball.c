@@ -41,8 +41,7 @@ static void transmit_lost(void)
 {
     lost_game = true;
     continue_game = false;
-    int8_t ball_values = 6;
-    ir_uart_putc(ball_values);
+    ir_uart_putc(I_HAVE_LOST);
 }
 
 /**
@@ -52,21 +51,21 @@ static void transmit_lost(void)
 static void ball_transmit(void)
 {
     // subtract a value from ball.velocity to ensure that it can fit inside 8 bits
-    int8_t ball_values = (ball.new_row << 5) | ((ball.velocity - 1) << 3) |
-                         ball.direction; // bit shifting for transmitting;
-    ir_uart_putc(ball_values);
+    int8_t received_data = (ball.new_row << 5) | ((ball.velocity - 1) << 3) |
+                           ball.direction; // bit shifting for transmitting;
+    ir_uart_putc(received_data);
     have_ball = false;
 }
 
 /**
  * @brief Gets the direction of the ball from the received transmission.
  *
- * @param ball_values The received transmission
+ * @param received_data The received transmission
  * @return int8_t The received direction
  */
-static int8_t get_direction(int8_t ball_values)
+static int8_t get_direction(int8_t received_data)
 {
-    int8_t direction = ball_values;
+    int8_t direction = received_data;
     // using bit shifting for last value of the trasmited integer
     for (int8_t i = 3; i < 8; i++) {
         direction &= ~(1 << i);
@@ -77,12 +76,12 @@ static int8_t get_direction(int8_t ball_values)
 /**
  * @brief Gets the velocity of the ball from the received transmission.
  *
- * @param ball_values The received transmission
+ * @param received_data The received transmission
  * @return int8_t The received velocity
  */
-static int8_t get_velocity(int8_t ball_values)
+static int8_t get_velocity(int8_t received_data)
 {
-    int8_t velocity = ball_values >> 3;
+    int8_t velocity = received_data >> 3;
     // using bit shifting for middle value of the trasmited integer
     for (int8_t i = 2; i < 8; i++) {
         velocity &= ~(1 << i); // wipes the bits
@@ -95,13 +94,13 @@ static int8_t get_velocity(int8_t ball_values)
  * @brief Gets the new_row of the ball from the received transmission. Currently does some funky
  * things to handle a mix-up between signed and unsigned integers.
  *
- * @param ball_values The received transmission
+ * @param received_data The received transmission
  * @return int8_t The received new_row
  */
-static int8_t get_new_row(int8_t ball_values)
+static int8_t get_new_row(int8_t received_data)
 {
     // using bit shifting for first three bit of the trasmited integer
-    int8_t new_row = (ball_values >> 5);
+    int8_t new_row = (received_data >> 5);
     // handles a mix-up between signed and unsigned integers.
     // the code below is to make sure the right row get passed correctly.
     switch (new_row) {
@@ -137,11 +136,11 @@ static int8_t get_new_row(int8_t ball_values)
 static void ball_receive(void)
 {
     if (ir_uart_read_ready_p()) {
-        int8_t ball_values = ir_uart_getc();
+        int8_t received_data = ir_uart_getc();
 
-        int8_t new_row = get_new_row(ball_values);
-        int8_t velocity = get_velocity(ball_values);
-        int8_t direction = get_direction(ball_values);
+        int8_t new_row = get_new_row(received_data);
+        int8_t velocity = get_velocity(received_data);
+        int8_t direction = get_direction(received_data);
 
         ball.velocity = velocity;
 
@@ -169,7 +168,7 @@ static void ball_receive(void)
 
         have_ball = true;
 
-        if (ball_values == 6) { // You've won
+        if (received_data == I_HAVE_LOST) { // You've won
             continue_game = false;
         }
     }

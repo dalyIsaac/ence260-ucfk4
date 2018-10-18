@@ -62,6 +62,13 @@
 #define GET_TIMER(counter) ((counter / 10) % 10) * 10 + counter % 10
 
 /**
+ * @brief Sent by the board which has just lost the game. This value was chosen because the enum
+ * Direction has a maximum value of 5.
+ *
+ */
+#define I_HAVE_LOST 7
+
+/**
  * @brief Specifies the values for the various directions.
  *
  */
