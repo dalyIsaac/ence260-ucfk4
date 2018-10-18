@@ -15,6 +15,7 @@
 #include "customtaskschedule.h"
 #include "ir_uart.h"
 #include "navswitch.h"
+#include "pacer.h"
 #include "pio.h"
 #include "puck.h"
 #include "system.h"

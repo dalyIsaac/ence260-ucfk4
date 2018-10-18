@@ -18,7 +18,6 @@
 #include "ball.h"
 #include "display.h"
 #include "ir_uart.h"
-#include "pacer.h"
 
 void board_init(void)
 {
