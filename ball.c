@@ -155,7 +155,7 @@ static void ball_receive(void)
     if (ir_uart_read_ready_p()) {
         int8_t received_data = ir_uart_getc();
 
-        if (!check_won()) {
+        if (!check_won(received_data)) {
             int8_t new_row = get_new_row(received_data);
             int8_t velocity = get_velocity(received_data);
             int8_t direction = get_direction(received_data);
