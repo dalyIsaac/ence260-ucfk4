@@ -45,10 +45,10 @@ static void transmit_lost(void)
 }
 
 /**
- * @brief Transmits the ball to the other board.
+ * @brief Transmits the ball's current attributes to the other board.
  *
  */
-static void ball_transmit(void)
+static void transmit_ball(void)
 {
     // subtract a value from ball.velocity to ensure that it can fit inside 8 bits
     int8_t received_data = (ball.new_row << 5) | ((ball.velocity - 1) << 3) |
@@ -146,6 +146,40 @@ static bool check_won(int8_t received_data)
 }
 
 /**
+ * @brief Applys the received ball values so that they're correct for this board.
+ *
+ * @param new_row The received new_row
+ * @param velocity The received velocity
+ * @param direction The received direction
+ */
+static void apply_received_ball_values(int8_t new_row, int8_t velocity, int8_t direction)
+{
+    ball.old_column = STARTING_OLD;
+    ball.old_row = STARTING_OLD;
+    ball.new_column = BALL_RECEIVED_START_COLUMN;
+
+    // figures out the direction and new_row for this board
+    switch (direction) {
+        case EAST:
+            ball.new_row = new_row;
+            ball.direction = WEST;
+            break;
+        case SOUTH_EAST:
+            ball.new_row = new_row - 1; // this is to adh
+            ball.direction = NORTH_WEST;
+            break;
+        case NORTH_EAST:
+            ball.new_row = new_row + 1;
+            ball.direction = SOUTH_WEST;
+            break;
+        default:
+            break;
+    }
+
+    ball.velocity = velocity;
+}
+
+/**
  * @brief Receives data from the other board. This is either data about the ball's attributes, or
  * that the other board has lost the game.
  *
@@ -154,36 +188,11 @@ static void ball_receive(void)
 {
     if (ir_uart_read_ready_p()) {
         int8_t received_data = ir_uart_getc();
-
         if (!check_won(received_data)) {
             int8_t new_row = get_new_row(received_data);
             int8_t velocity = get_velocity(received_data);
             int8_t direction = get_direction(received_data);
-
-            ball.velocity = velocity;
-
-            // figures out the direction and new_row for this board
-            switch (direction) {
-                case EAST:
-                    ball.direction = WEST;
-                    ball.new_row = new_row;
-                    break;
-                case SOUTH_EAST:
-                    ball.direction = NORTH_WEST;
-                    ball.new_row = new_row - 1; // this is to adh
-                    break;
-                case NORTH_EAST:
-                    ball.direction = SOUTH_WEST;
-                    ball.new_row = new_row + 1;
-                    break;
-                default:
-                    break;
-            }
-
-            ball.old_row = STARTING_OLD;
-            ball.old_column = STARTING_OLD;
-            ball.new_column = BALL_RECEIVED_START_COLUMN;
-
+            apply_received_ball_values(new_row, velocity, direction);
             have_ball = true;
         }
     }
@@ -201,13 +210,13 @@ static void ball_update_display(void)
 }
 
 /**
- * @brief Checks if the board should transmit the ball's position. If so, it calls ball_transmit.
+ * @brief Checks if the board should transmit the ball's position. If so, it calls transmit_ball.
  *
  */
 static void handle_ball_transmission(void)
 {
     if (have_ball && ball.new_column == -1) {
-        ball_transmit();
+        transmit_ball();
     }
 }
 
