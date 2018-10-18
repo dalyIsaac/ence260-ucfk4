@@ -178,8 +178,8 @@ static void ball_receive(void)
         // setting received_data to an unsigned integer avoids a nasty bug in
         // get_new_row(). To see the old get_new_row go to
         // https://eng-git.canterbury.ac.nz/ence260-2018/group436/blob/b97516ce8a9072bec1e871a162c68e9ba6eb2a64/ball.c#L100
-
         uint8_t received_data = ir_uart_getc();
+
         if (!check_won(received_data)) {
             int8_t new_row = get_new_row(received_data);
             int8_t velocity = get_velocity(received_data);

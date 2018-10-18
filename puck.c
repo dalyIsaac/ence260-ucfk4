@@ -48,6 +48,7 @@ static void puck_update_display(void)
  */
 static void puck_update_value(NavMovement change)
 {
+    // ensures that the puck stays within the bounds of the display
     if (puck.new_bottom + change >= BOTTOM_ROW &&
         puck.new_top + change < LEDMAT_ROWS_NUM) {
         puck = (Puck){.old_bottom = puck.new_bottom,

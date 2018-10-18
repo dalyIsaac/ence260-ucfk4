@@ -12,16 +12,17 @@
  */
 #ifndef PUCK_H
 #define PUCK_H
+#include "ledmat.h"
 #include "navswitch.h"
 #include "system.h"
 
 /**
- * @brief The column which the puck resides in
+ * @brief The column which the puck resides in.
  */
-#define PUCK_COL 4
+#define PUCK_COL LEDMAT_COLS_NUM - 1
 
 /**
- * @brief Arbitrary numbers for the starting old_* attributes
+ * @brief Arbitrary numbers for the starting old_* attributes.
  */
 #define STARTING_OLD 0
 
