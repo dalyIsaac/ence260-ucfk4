@@ -61,9 +61,9 @@ static void transmit_ball(void)
  * @brief Gets the direction of the ball from the received transmission.
  *
  * @param received_data The received transmission
- * @return int8_t The received direction
+ * @return uint8_t The received direction
  */
-static int8_t get_direction(int8_t received_data)
+static int8_t get_direction(uint8_t received_data)
 {
     int8_t direction = received_data;
     // using bit shifting for last value of the trasmited integer
@@ -77,9 +77,9 @@ static int8_t get_direction(int8_t received_data)
  * @brief Gets the velocity of the ball from the received transmission.
  *
  * @param received_data The received transmission
- * @return int8_t The received velocity
+ * @return uint8_t The received velocity
  */
-static int8_t get_velocity(int8_t received_data)
+static int8_t get_velocity(uint8_t received_data)
 {
     int8_t velocity = received_data >> 3;
     // using bit shifting for middle value of the trasmited integer
@@ -91,42 +91,15 @@ static int8_t get_velocity(int8_t received_data)
 }
 
 /**
- * @brief Gets the new_row of the ball from the received transmission. Currently does some funky
- * things to handle a mix-up between signed and unsigned integers.
+ * @brief Gets the new_row of the ball from the received transmission, and returns the correct row
+ * for the receiving board - the boards have different orientations.
  *
  * @param received_data The received transmission
- * @return int8_t The received new_row
+ * @return uint8_t The received new_row
  */
-static int8_t get_new_row(int8_t received_data)
+static int8_t get_new_row(uint8_t received_data)
 {
-    // using bit shifting for first three bit of the trasmited integer
-    int8_t new_row = (received_data >> 5);
-    // handles a mix-up between signed and unsigned integers.
-    // the code below is to make sure the right row get passed correctly.
-    switch (new_row) {
-        case 0:
-            return 6;
-            break;
-        case 1:
-            return 5;
-            break;
-        case 2:
-            return 4;
-            break;
-        case 3:
-            return 3;
-            break;
-        case -4:
-            return 2;
-            break;
-        case -3:
-            return 1;
-            break;
-        case -2:
-            return 0;
-            break;
-    }
-    return new_row;
+    return 6 - (received_data >> 5);
 }
 
 /**
@@ -138,7 +111,7 @@ static int8_t get_new_row(int8_t received_data)
  * @return false The other board has transmitted information about the ball, and thus the game can
  * continue.
  */
-static bool check_won(int8_t received_data)
+static bool check_won(uint8_t received_data)
 {
     if (received_data == I_HAVE_LOST) {
         continue_game = false;
@@ -192,7 +165,11 @@ static void set_received_ball_values(int8_t new_row, int8_t velocity, int8_t dir
 static void ball_receive(void)
 {
     if (ir_uart_read_ready_p()) {
-        int8_t received_data = ir_uart_getc();
+        // setting received_data to an unsigned integer avoids a nasty bug in get_new_row(). To see
+        // the old get_new_row go to
+        // https://eng-git.canterbury.ac.nz/ence260-2018/group436/blob/b97516ce8a9072bec1e871a162c68e9ba6eb2a64/ball.c#L100
+
+        uint8_t received_data = ir_uart_getc();
         if (!check_won(received_data)) {
             int8_t new_row = get_new_row(received_data);
             int8_t velocity = get_velocity(received_data);
