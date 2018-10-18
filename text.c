@@ -2,13 +2,15 @@
  * @file text.c
  * @author Isaac Daly (idd17@uclive.ac.nz)
  * @author Divyean Sivarman (dsi3@uclive.ac.nz)
- * @brief Contains definitions for the text displayed to the user through the display.
+ * @brief Contains definitions for the text displayed to the user through the
+ * display.
  * @version 1.0
  * @date 2018-10-18
  *
  * @copyright Copyright (c) 2018
  *
- * @note Comments for non-static functions and variables are inside the associated header file.
+ * @note Comments for non-static functions and variables are inside the
+ * associated header file.
  *
  */
 
@@ -47,9 +49,11 @@ void show_initial_text(void)
 void notify(void)
 {
     if (lost_game) {
-        tinygl_text("LOST. PRESS NAVSWITCH DOWN TO PLAY AGAIN. PRESS RESET BUTTON TO END GAME.");
+        tinygl_text("LOST. PRESS NAVSWITCH DOWN TO PLAY AGAIN. PRESS RESET "
+                    "BUTTON TO END GAME.");
     } else {
-        tinygl_text("WON. PRESS NAVSWITCH DOWN TO PLAY AGAIN. PRESS RESET BUTTON TO END GAME.");
+        tinygl_text("WON. PRESS NAVSWITCH DOWN TO PLAY AGAIN. PRESS RESET "
+                    "BUTTON TO END GAME.");
     }
     while (1) {
         pacer_wait();

@@ -2,8 +2,9 @@
  * @file puck.c
  * @author Isaac Daly (idd17@uclive.ac.nz)
  * @author Divyean Sivarman (dsi3@uclive.ac.nz)
- * @brief Contains definitions for the puck. The puck (also known as a paddle) is used to redirect
- * the ball, in order to prevent the player from losing the game.
+ * @brief Contains definitions for the puck. The puck (also known as a paddle)
+ * is used to redirect the ball, in order to prevent the player from losing the
+ * game.
  *
  * @version 1.0
  * @date 2018-10-18
@@ -11,7 +12,8 @@
  * @copyright Copyright (c) 2018
  *
  * @note The bottom of the board is the side closest to the USB port
- * @note Comments for non-static functions and variables are inside the associated header file.
+ * @note Comments for non-static functions and variables are inside the
+ * associated header file.
  */
 #include "puck.h"
 
@@ -46,7 +48,8 @@ static void puck_update_display(void)
  */
 static void puck_update_value(NavMovement change)
 {
-    if (puck.new_bottom + change >= BOTTOM_ROW && puck.new_top + change < LEDMAT_ROWS_NUM) {
+    if (puck.new_bottom + change >= BOTTOM_ROW &&
+        puck.new_top + change < LEDMAT_ROWS_NUM) {
         puck = (Puck){.old_bottom = puck.new_bottom,
                       .old_top = puck.new_top,
                       .new_bottom = puck.new_bottom + change,
