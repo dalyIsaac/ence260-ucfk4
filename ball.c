@@ -38,7 +38,8 @@ static Ball ball;
 
 /**
  * @brief Transmits to the other board that this board has lost the game. Also
- * tells the custom task scheduler to stop the execution of the game.
+ * tells the custom task scheduler to stop the execution of the game. This is
+ * kept inside this module because it hijacks the existing receiving scheme.
  *
  */
 static void lost_transmit(void)
