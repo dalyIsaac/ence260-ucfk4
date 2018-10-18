@@ -79,13 +79,13 @@
  * @brief The number of the last column in the board (per zero-based indexing).
  *
  */
-#define LAST_COLUMN LEDMAT_COLS_NUM - 1;
+#define LAST_COLUMN LEDMAT_COLS_NUM - 1
 
 /**
  * @brief The maximum velocity of the ball.
  *
  */
-#define MAX_VELOCITY 4;
+#define MAX_VELOCITY 4
 
 /**
  * @brief Specifies the values for the various directions.
