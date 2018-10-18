@@ -69,6 +69,12 @@
 #define I_HAVE_LOST 7
 
 /**
+ * @brief The column in which every ball that has been just received starts off in.
+ *
+ */
+#define BALL_RECEIVED_START_COLUMN STARTING_COLUMN - 1
+
+/**
  * @brief Specifies the values for the various directions.
  *
  */

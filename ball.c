@@ -130,7 +130,24 @@ static int8_t get_new_row(int8_t received_data)
 }
 
 /**
- * @brief Receives the ball from the other board, if it is available.
+ * @brief Checks to see if the game should continue.
+ *
+ * @param received_data The data received from the other board
+ * @return true The other board has indicated that it has lost the game, thus the game should not
+ * continue.
+ * @return false The other board has transmitted information about the ball.
+ */
+static bool check_won(int8_t received_data)
+{
+    if (received_data == I_HAVE_LOST) {
+        continue_game = false;
+    }
+    return continue_game;
+}
+
+/**
+ * @brief Receives data from the other board. This is either data about the ball's attributes, or
+ * that the other board has lost the game.
  *
  */
 static void ball_receive(void)
@@ -138,38 +155,36 @@ static void ball_receive(void)
     if (ir_uart_read_ready_p()) {
         int8_t received_data = ir_uart_getc();
 
-        int8_t new_row = get_new_row(received_data);
-        int8_t velocity = get_velocity(received_data);
-        int8_t direction = get_direction(received_data);
+        if (!check_won()) {
+            int8_t new_row = get_new_row(received_data);
+            int8_t velocity = get_velocity(received_data);
+            int8_t direction = get_direction(received_data);
 
-        ball.velocity = velocity;
+            ball.velocity = velocity;
 
-        // figures out the direction and new_row for this board
-        switch (direction) {
-            case EAST:
-                ball.direction = WEST;
-                ball.new_row = new_row;
-                break;
-            case SOUTH_EAST:
-                ball.direction = NORTH_WEST;
-                ball.new_row = new_row - 1; // this is to adh
-                break;
-            case NORTH_EAST:
-                ball.direction = SOUTH_WEST;
-                ball.new_row = new_row + 1;
-                break;
-            default:
-                break;
-        }
+            // figures out the direction and new_row for this board
+            switch (direction) {
+                case EAST:
+                    ball.direction = WEST;
+                    ball.new_row = new_row;
+                    break;
+                case SOUTH_EAST:
+                    ball.direction = NORTH_WEST;
+                    ball.new_row = new_row - 1; // this is to adh
+                    break;
+                case NORTH_EAST:
+                    ball.direction = SOUTH_WEST;
+                    ball.new_row = new_row + 1;
+                    break;
+                default:
+                    break;
+            }
 
-        ball.old_row = STARTING_OLD;
-        ball.old_column = STARTING_OLD;
-        ball.new_column = -1; // all balls start in this column
+            ball.old_row = STARTING_OLD;
+            ball.old_column = STARTING_OLD;
+            ball.new_column = BALL_RECEIVED_START_COLUMN;
 
-        have_ball = true;
-
-        if (received_data == I_HAVE_LOST) { // You've won
-            continue_game = false;
+            have_ball = true;
         }
     }
 }
