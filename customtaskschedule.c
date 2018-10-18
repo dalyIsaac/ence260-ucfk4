@@ -1,4 +1,3 @@
-
 /** @file   task.c
     @author M. P. Hayes, UCECE
     @date   17 August 2011
@@ -6,10 +5,11 @@
 
     @note task_schedule was modified in order to allow the game to end,
    depending on the Boolean `continue_game`, which is defined in ball.h, rather
-   than running in an infinite loop. We (Isaac Daly <idd17@uclive.ac.nz> and
-   Divyean Sivarman <dsi3@uclive.ac.nz>) do not claim any ownership over this
-   module or the accompanying header file. Only two lines of source code have
-   been modified:
+   than running in an infinite loop.
+
+   We (Isaac Daly <idd17@uclive.ac.nz> and Divyean Sivarman <dsi3@uclive.ac.nz>)
+   do not claim any ownership over this module or the accompanying header file.
+   Only two lines of source code have been modified:
    - #include "ball.h" was added
    - while (1) { was changed to while (continue_game) {
 */
