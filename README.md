@@ -71,13 +71,6 @@ Compass directions, with the same orientiation as the board above:
 
 ![Image of the compass directions with the same orientation as above](media/compass.png)
 
-## Code
-
-The coding style is specified in [`.clang_format`](.clang_format). The general style mostly reflects the [ENCE260 style guidelines](https://learn.canterbury.ac.nz/pluginfile.php/529635/mod_resource/content/8/styleguidelines.html), with a few differences:
-
-- In keeping with the variable and function name style in the APIs, variables and function names are lowercase with words separated by underscores, as necessary.
-- `enum`s do not start with an uppercase, as this is used by their `typedef` definition.
-
 ## Ball transmission
 
 The structure of the transmitted data between the boards is contained within a single 8-bit integer, where:
@@ -85,3 +78,10 @@ The structure of the transmitted data between the boards is contained within a s
 - bit 0 to 2 include the ball's new_row (**3 bits**)
 - bit 3 to 4 include the ball's velocity. Since the maximum velocity is 4, as defined in MAX_VELOCITY, to ensure that it can fit within 2 bits it has 1 subtracted from it. (**2 bits**)
 - bit 5 to bit 7 include the ball's direction (**3 bits**)
+
+## Code
+
+The coding style is specified in the `.clang_format` file. The general style mostly reflects the [ENCE260 style guidelines](https://learn.canterbury.ac.nz/pluginfile.php/529635/mod_resource/content/8/styleguidelines.html), with a few differences:
+
+- In keeping with the variable and function name style in the APIs, variables and function names are lowercase with words separated by underscores, as necessary.
+- `enum`s do not start with an uppercase, as this is used by their `typedef` definition.
