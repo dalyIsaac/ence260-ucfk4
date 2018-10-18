@@ -69,10 +69,23 @@
 #define I_HAVE_LOST 7
 
 /**
- * @brief The column in which every ball that has been just received starts off in.
+ * @brief The column in which every ball that has been just received starts off in, or the
+ * row/column which the ball starts off in when the player does not start the game.
  *
  */
-#define BALL_RECEIVED_START_COLUMN STARTING_COLUMN - 1
+#define BALL_RECEIVED_START STARTING_OLD - 1
+
+/**
+ * @brief The number of the last column in the board (per zero-based indexing).
+ *
+ */
+#define LAST_COLUMN LEDMAT_COLS_NUM - 1;
+
+/**
+ * @brief The maximum velocity of the ball.
+ *
+ */
+#define MAX_VELOCITY 4;
 
 /**
  * @brief Specifies the values for the various directions.

@@ -159,7 +159,7 @@ static void set_received_ball_values(int8_t new_row, int8_t velocity, int8_t dir
 {
     ball.old_column = STARTING_OLD;
     ball.old_row = STARTING_OLD;
-    ball.new_column = BALL_RECEIVED_START_COLUMN;
+    ball.new_column = BALL_RECEIVED_START;
 
     // figures out the direction and new_row for this board
     switch (direction) {
@@ -270,8 +270,8 @@ static void handle_ball_puck_collision_west(void)
             ball.direction = SOUTH_EAST;
             ball.new_row--;
         } else if (impact == NO_IMPACT) {
-            ball.new_row = 0;
-            ball.new_column = 0;
+            ball.new_row = STARTING_ROW;
+            ball.new_column = STARTING_COLUMN;
             ball.direction = WEST;
         }
     }
@@ -294,10 +294,11 @@ static void handle_ball_puck_collision_south_west(void)
             ball.new_row = ball.old_row;
         } else if (impact == IMPACT_BOTTOM) {
             ball.direction = SOUTH_EAST;
+            // per the model, this particular collision increases the velocity by 2
             ball.velocity += 2;
         } else if (impact == NO_IMPACT) {
             ball.new_row = ball.old_row - 1;
-            ball.new_column = 4;
+            ball.new_column = LAST_COLUMN;
             ball.direction = WEST;
         }
     }
@@ -314,6 +315,7 @@ static void handle_ball_puck_collision_north_west(void)
         ball.new_column = ball.old_column - 1;
         if (impact == IMPACT_TOP) {
             ball.direction = NORTH_EAST;
+            // per the model, this particular collision increases the velocity by 2
             ball.velocity += 2;
         } else if (impact == IMPACT_MIDDLE) {
             ball.direction = EAST;
@@ -323,7 +325,7 @@ static void handle_ball_puck_collision_north_west(void)
             ball.velocity++;
         } else if (impact == NO_IMPACT) {
             ball.new_row = ball.old_row + 1;
-            ball.new_column = 4;
+            ball.new_column = LAST_COLUMN;
             ball.direction = WEST;
         }
     }
@@ -404,14 +406,17 @@ static void ball_update_value(void)
     }
 
     handle_ball_puck_collision();
-    if (ball.new_column == 4) {
+
+    // The ball should never reside in the LAST_COLUMN after it has collided with the puck.
+    // If the ball is in LAST_COLUMN at this point, the player has lost this game.
+    if (ball.new_column == LAST_COLUMN) {
         transmit_lost();
     } else {
         handle_ball_wall_collision();
         handle_ball_transmission();
 
-        if (ball.velocity > 4) {
-            ball.velocity = 4;
+        if (ball.velocity > MAX_VELOCITY) {
+            ball.velocity = MAX_VELOCITY;
         }
 
         ball_update_display();
@@ -456,8 +461,8 @@ void ball_init(void)
     } else {
         ball = (Ball){.old_row = STARTING_OLD,
                       .old_column = STARTING_OLD,
-                      .new_row = -1,
-                      .new_column = -1,
+                      .new_row = BALL_RECEIVED_START,
+                      .new_column = BALL_RECEIVED_START,
                       .velocity = 4,
                       .direction = STARTING_OLD};
     }
