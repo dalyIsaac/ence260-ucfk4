@@ -19,6 +19,38 @@
 #include "system.h"
 
 /**
+ * @brief Wipes bit X when used with a bitwise and.
+ *
+ */
+#define WIPE_BIT(X) ~(1 << X)
+
+/**
+ * @brief The shift for which new_row has to be shifted into the transmitted
+ * integer.
+ *
+ */
+#define NEW_ROW_SHIFT 5
+
+/**
+ * @brief The shift for which the velocity has to be shifted into the
+ * transmitted integer.
+ *
+ */
+#define VELOCITY_SHIFT 3
+
+/**
+ * @brief The length of velocity inside the transmitted integer.
+ *
+ */
+#define VELOCITY_BIT_LENGTH 2
+
+/**
+ * @brief The length of direction inside the transmitted integer.
+ *
+ */
+#define DIRECTION_BIT_LENGTH 2
+
+/**
  * @brief Starting row for the ball.
  *
  */
@@ -43,14 +75,15 @@
 #define STARTING_VELOCITY 1
 
 /**
- * @brief The first value which is checked against to see if the ball can update.
+ * @brief The first value which is checked against to see if the ball can
+ * update.
  *
  */
 #define FIRST_VALUE_FOR_UPDATE 99
 
 /**
- * @brief Used for determining the subtract_value, which in turn allows the ball to be updated
- * depending on its velocity.
+ * @brief Used for determining the subtract_value, which in turn allows the ball
+ * to be updated depending on its velocity.
  *
  */
 #define VARIABLE_PERIOD_NUMERATOR 100
@@ -62,15 +95,16 @@
 #define GET_TIMER(counter) ((counter / 10) % 10) * 10 + counter % 10
 
 /**
- * @brief Sent by the board which has just lost the game. This value was chosen because the enum
- * Direction has a maximum value of 5.
+ * @brief Sent by the board which has just lost the game. This value was chosen
+ * because the enum Direction has a maximum value of 5.
  *
  */
 #define I_HAVE_LOST 7
 
 /**
- * @brief The column in which every ball that has been just received starts off in, or the
- * row/column which the ball starts off in when the player does not start the game.
+ * @brief The column in which every ball that has been just received starts off
+ * in, or the row/column which the ball starts off in when the player does not
+ * start the game.
  *
  */
 #define BALL_RECEIVED_START STARTING_OLD - 1
@@ -81,6 +115,17 @@
  */
 #define LAST_COLUMN LEDMAT_COLS_NUM - 1
 
+/**
+ * @brief The number of the last row in the board (per zero-based indexing).
+ *
+ */
+#define LAST_ROW LEDMAT_ROWS_NUM - 1
+
+/**
+ * @brief The column at which data is transmitted to the other board
+ *
+ */
+#define TRANSMIT_COLUMN -1
 /**
  * @brief The maximum velocity of the ball.
  *
@@ -136,14 +181,15 @@ typedef enum impact_point_e {
 bool have_ball;
 
 /**
- * @brief Indicates whether this game has lost the game. This is checked prior to notifying the
- * player of the result.
+ * @brief Indicates whether this game has lost the game. This is checked prior
+ * to notifying the player of the result.
  *
  */
 bool lost_game;
 
 /**
- * @brief Used to indicate to the custom task scheduler whether the game is still continuing.
+ * @brief Used to indicate to the custom task scheduler whether the game is
+ * still continuing.
  *
  */
 bool continue_game;
